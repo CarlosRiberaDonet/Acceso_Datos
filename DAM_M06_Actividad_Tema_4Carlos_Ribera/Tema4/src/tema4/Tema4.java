@@ -4,7 +4,7 @@
  */
 package tema4;
 
-import entidades.Empleado;
+import controllers.EmpleadoController;
 import java.util.Scanner;
 
 /**
@@ -17,16 +17,24 @@ public class Tema4 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Empleado empleado = new Empleado(1, "Carlos", "1234", "Carlos Ribera Donet", "123456789", null);
-        System.out.println(empleado);
         
         Scanner sc = new Scanner(System.in);
         String menu = "";
         
+        System.out.println("------ MENU ------");
+        System.out.println("a: Crear Empleado");
+        System.out.println("b: Login");
+        System.out.println("c: Modificar Empleado");
+        System.out.println("d: Cambiar Contraseña");
+        System.out.println("e: Eliminar Empleado");
+        System.out.println("f: Salir");
+        
+        menu = sc.nextLine();
+        
         switch(menu){
             case "a":
             {
-                // Insertar empleado
+                EmpleadoController.CrearEmpleado();
             }
             case "b":{
                 // Login

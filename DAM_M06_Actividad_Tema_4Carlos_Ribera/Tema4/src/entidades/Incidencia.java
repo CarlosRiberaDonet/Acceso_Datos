@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
  */
 public class Incidencia {
     
-    private int incidenciaId;
     private LocalDateTime fecha;
     private Empleado empleadoOrigen;
     private Empleado empleadoDestino;
@@ -20,8 +19,7 @@ public class Incidencia {
     private char tipo;
     
     // CONSTRUCTOR
-    public Incidencia(int incidenciaId, LocalDateTime fecha, Empleado empleadoOrigen, Empleado empleadoDestino, String detalle, char tipo) {
-        this.incidenciaId = incidenciaId;
+    public Incidencia(LocalDateTime fecha, Empleado empleadoOrigen, Empleado empleadoDestino, String detalle, char tipo) {
         this.fecha = LocalDateTime.now();
         this.empleadoOrigen = empleadoOrigen;
         this.empleadoDestino = empleadoDestino;
@@ -33,13 +31,6 @@ public class Incidencia {
     }
     
     // GETTERS Y SETTERS
-    public int getIncidenciaId() {
-        return incidenciaId;
-    }
-
-    public void setIncidenciaId(int incidenciaId) {
-        this.incidenciaId = incidenciaId;
-    }
 
     public LocalDateTime getFecha() {
         return fecha;
@@ -84,7 +75,6 @@ public class Incidencia {
     @Override
     public String toString(){
         return "Incidencia{" +
-                "ID: " + incidenciaId +
                 "FECHA: " + fecha +
                 "ORIGEN: " + (empleadoOrigen != null ? empleadoOrigen.getNombreCompleto() : "N/A") +
                 "DESTINO: " + (empleadoDestino != null ? empleadoDestino.getNombreCompleto() : "N/A") +
