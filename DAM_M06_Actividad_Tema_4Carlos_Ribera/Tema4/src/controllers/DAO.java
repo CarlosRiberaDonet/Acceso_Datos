@@ -8,6 +8,7 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import entidades.Empleado;
+import java.util.List;
 
 
 /**
@@ -16,20 +17,23 @@ import entidades.Empleado;
  */
 public class DAO {
     
-    // Atributo para la persistencia en de db4o
-    private static ObjectContainer db = null; 
     
+    private static ObjectContainer db = null; // Conexión estatica
+    
+    // Abrre la base de datos si aún no está abierta
     public DAO(){
 
-        if (db == null) { // Solo abre la base de datos si aún no está abierta
+        if (db == null) {
             db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), "archivo.db");
         }
     }
     
+    // Método para cerrar la conexión
     public void closeDB(){
         if(db != null){
             db.close();
             db = null;
+            System.out.println("Conexion cerrada correctamente");
         }
     }
     
@@ -39,14 +43,34 @@ public class DAO {
         System.out.println("Objeto guardado ");
     }
     
+    public static ObjectContainer getDB(){
+        return db;
+    }
+    
     // Método para buscar nombre de usuario
     public boolean BuscarNombreUsuario(String nombreUsuario){
         
-        // Obtengo la conexión a db4o
-        
+        // Obtengo la conexión a db4o       
         Empleado empleado = new Empleado(nombreUsuario); // Creo un objeto Empleado
         ObjectSet<Empleado> found = db.queryByExample(empleado);  //Busco en db4o
         
         return !found.isEmpty(); // Si encuentra el nombreUsuario, devuelve true
+    }
+    
+    public boolean ComprobarCredenciales(String nombreUsuario, String contrasena){
+             
+        // Si el usuario existe
+        if(BuscarNombreUsuario(nombreUsuario)){          
+            Empleado objetoEmpleado = new Empleado(nombreUsuario); // Creo un objeto Empleado          
+            ObjectSet<Empleado> found = db.queryByExample(objetoEmpleado); // Busco en db4o
+            
+            
+            Empleado empleado = found.next(); // Obtengo el objeto Empleado almacenado en archivo.db
+            
+            return empleado.getContrasena().equals(contrasena); // Compruebo que la contraseña introducida por el USR
+        }
+        System.out.println("Usuario no encontrado o contraseña incorrecta");
+        
+        return false;
     }
 }

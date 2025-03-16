@@ -19,38 +19,38 @@ public class Tema4 {
     public static void main(String[] args) {
         
         Scanner sc = new Scanner(System.in);
-        String menu = "";
+        String menu = "";      
         
-        System.out.println("------ MENU ------");
-        System.out.println("a: Crear Empleado");
-        System.out.println("b: Login");
-        System.out.println("c: Modificar Empleado");
-        System.out.println("d: Cambiar Contraseña");
-        System.out.println("e: Eliminar Empleado");
-        System.out.println("f: Salir");
-        
-        menu = sc.nextLine();
-        
-        switch(menu){
-            case "a":
-            {
-                EmpleadoController.CrearEmpleado();
+        do{
+            System.out.println("------ MENU ------");
+            System.out.println("a: Crear Empleado");
+            System.out.println("b: Login");
+            System.out.println("c: Modificar Empleado");
+            System.out.println("d: Cambiar Contraseña");
+            System.out.println("e: Eliminar Empleado");
+            System.out.println("f: Salir");
+
+            menu = sc.nextLine();
+
+            switch(menu){
+                case "a":
+                {
+                    EmpleadoController.CrearEmpleado();
+                }
+                case "b":{
+                    EmpleadoController.Login();
+                }
+                case "c":
+                {
+                    // Modificar empleado
+                }
+                case "d":{
+                    // Cambiar contraseña
+                }
+                case "e":{
+                    // Eliminar empleado
+                }
             }
-            case "b":{
-                // Login
-            }
-            case "c":
-            {
-                // Modificar empleado
-            }
-            case "d":{
-                // Cambiar contraseña
-            }
-            case "e":{
-                // Eliminar empleado
-            }
-        }
-        
-    }
-    
+        } while(!menu.equals("f"));   
+    } 
 }

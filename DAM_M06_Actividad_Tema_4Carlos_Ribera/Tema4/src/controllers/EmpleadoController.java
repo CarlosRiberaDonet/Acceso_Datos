@@ -57,27 +57,14 @@ public class EmpleadoController {
         
         // Solicito el nombre de usuario
         String nombreUsuario = Validation.SolicitaString("Ingrese el nombre de usuario", 30);
+        String contrasena = Validation.SolicitaString("Introduce la contraseña del usuario " + nombreUsuario, 30);
         
-        // Compruebo si el usuario existe
-        if(dao.BuscarNombreUsuario(nombreUsuario)){
-            
-            // Solicito la contraseña
-            String contrasena = Validation.SolicitaString("Introduce la contraseña del usuario " + nombreUsuario, 30);
-            
-            // Llamo al método de DAO
-            DAO dao = new DAO();
-            Empleado empleado = dao.ValidarCredenciales(nombreUsuario, contrasena);
-
-            if(empleado != null){
-                System.out.println("\n Inicio de sesion exitoso para " + empleado.getNombreUsuario());
-                return true;             
-            } else{
-                System.out.println("\n Contraseña incorrecta");
-                return false;
-            }    
+        // Compruebo si el usuario y la contraseña son correctos
+        if(dao.ComprobarCredenciales(nombreUsuario, contrasena)){
+            System.out.println("Empleado encontrado");
+            return;
         }     
         System.out.println("\n No se ha encontrado el nombre de usuario introducido");
-        return false;
     }
     
 }
