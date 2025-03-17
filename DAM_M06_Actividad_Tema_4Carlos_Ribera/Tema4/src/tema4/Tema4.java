@@ -42,7 +42,7 @@ public class Tema4 {
                 }
                 case "c":
                 {
-                    // Modificar empleado
+                    EmpleadoController.ModificarEmpleado();
                 }
                 case "d":{
                     // Cambiar contraseña

@@ -4,6 +4,8 @@
  */
 package controllers;
 import entidades.Empleado;
+import java.util.HashSet;
+import java.util.Set;
 import utils.Validation;
 /**
  *
@@ -67,4 +69,26 @@ public class EmpleadoController {
         System.out.println("\n No se ha encontrado el nombre de usuario introducido");
     }
     
+    public static void ModificarEmpleado(){
+        
+        // Solicito el nombre de usuario
+        String nombreUsuario = Validation.SolicitaString("Ingrese el nombre de usuario", 30);
+        
+        // Compruebo si el nombre de usuario existe en la base de datos
+        if(dao.BuscarNombreUsuario(nombreUsuario)){
+            Empleado empleadoModificado = dao.getEmpleado(nombreUsuario);
+            
+            String nuevoNombre = Validation.SolicitaString("Ingrese el nuevo nombre de usuario", 30);
+            String nuevaContrasena = Validation.SolicitaString("Introduzca la nueva contrasña", 30);
+            String nuevoNombreCompleto = Validation.SolicitaString("Ingrese el nuevo nombre completo", 50);
+            String nuevoTelefono = Validation.SolicitaTelefono("Ingrese el nuevo numero de telefono");
+            
+            empleadoModificado.setNombreUsuario(nuevoNombre);
+            empleadoModificado.setContrasena(nuevaContrasena);
+            empleadoModificado.setNombreCompleto(nuevoNombreCompleto);
+            empleadoModificado.setTelefono(nuevoTelefono);
+            
+            dao.SaveObject(empleadoModificado);
+        }
+    }
 }

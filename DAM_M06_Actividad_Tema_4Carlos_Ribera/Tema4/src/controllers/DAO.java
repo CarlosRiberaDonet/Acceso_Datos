@@ -73,4 +73,16 @@ public class DAO {
         
         return false;
     }
+    
+    public Empleado getEmpleado(String nombreUsuario){
+        
+        Empleado empleado = new Empleado(nombreUsuario);
+        ObjectSet<Empleado> result = db.queryByExample(empleado);
+        
+        if(!result.isEmpty()){
+            return result.next();
+        }
+        
+        return null;
+    }
 }
