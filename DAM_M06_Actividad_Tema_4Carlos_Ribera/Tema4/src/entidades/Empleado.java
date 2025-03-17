@@ -90,7 +90,9 @@ public class Empleado {
     @Override
     public String toString() {
         return "------ Empleado ------ \n" +
+                "ID: "  + id + "\n" +
                 "USUARIO: " + nombreUsuario + "\n" +
+                "PASSWORD: " + contrasena + "\n" +
                 "NOMBRE: " + nombreCompleto + "\n" +
                 "TELEFONO: " + telefono + "\n" +
                 "INCIDENCIAS: " + (incidencias != null ? incidencias.size() : 0);

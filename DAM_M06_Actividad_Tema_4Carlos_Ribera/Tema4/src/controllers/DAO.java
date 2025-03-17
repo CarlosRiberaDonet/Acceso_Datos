@@ -8,6 +8,7 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import entidades.Empleado;
+import entidades.Incidencia;
 
 
 /**
@@ -127,4 +128,15 @@ public class DAO {
     }
     
     // Método para obtener incidencia mediante su id
+    public Incidencia  getIncidencia(int id){
+        
+        Incidencia incidencia = new Incidencia();     
+        ObjectSet<Incidencia> result = db.queryByExample(incidencia);
+        
+        if(!result.isEmpty()){
+            return result.next();
+        }
+        
+        return null;
+    }
 }

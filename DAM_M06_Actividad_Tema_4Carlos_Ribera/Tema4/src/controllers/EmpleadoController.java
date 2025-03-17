@@ -146,4 +146,13 @@ public class EmpleadoController {
         } 
         return +1; // Si es el primer empleado, devuelvo 1
     }
+    
+    public static void Listar(){
+        
+        ObjectSet<Empleado> empleadosList = dao.getDB().query(Empleado.class);
+        
+        for(Empleado e : empleadosList){
+            System.out.println(e.toString());        }
+    }
+            
 }

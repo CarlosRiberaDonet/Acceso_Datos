@@ -5,6 +5,7 @@
 package tema4;
 
 import controllers.EmpleadoController;
+import controllers.IncidenciaController;
 import java.util.Scanner;
 
 /**
@@ -18,7 +19,7 @@ public class Tema4 {
      */
     public static void main(String[] args) {
         
-        
+        EmpleadoController.Listar();
         
         Scanner sc = new Scanner(System.in);
         String menu = "";      
@@ -77,6 +78,8 @@ public class Tema4 {
             switch(menu){
                 case "a":{
                     // Obtener objeto incidencia mediante su id
+                    IncidenciaController.ObtenerIncidenciaId();
+                    break;
                 }
                 case "b":{
                     // Obtener lista de todas las incidencias
