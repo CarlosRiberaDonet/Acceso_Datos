@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
  */
 public class Incidencia {
     
+    private int id;
     private LocalDateTime fecha;
     private Empleado empleadoOrigen;
     private Empleado empleadoDestino;
@@ -19,7 +20,8 @@ public class Incidencia {
     private char tipo;
     
     // CONSTRUCTOR
-    public Incidencia(LocalDateTime fecha, Empleado empleadoOrigen, Empleado empleadoDestino, String detalle, char tipo) {
+    public Incidencia(int id, LocalDateTime fecha, Empleado empleadoOrigen, Empleado empleadoDestino, String detalle, char tipo) {
+        this.id = id;
         this.fecha = LocalDateTime.now();
         this.empleadoOrigen = empleadoOrigen;
         this.empleadoDestino = empleadoDestino;
@@ -31,6 +33,14 @@ public class Incidencia {
     }
     
     // GETTERS Y SETTERS
+    
+    public int getId(){
+        return id;
+    }
+    
+    public void setId(int id){
+        this.id = id;
+    }
 
     public LocalDateTime getFecha() {
         return fecha;

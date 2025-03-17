@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class Empleado {
     
+    private int id;
     private String nombreUsuario;
     private String contrasena;
     private String nombreCompleto;
@@ -19,7 +20,8 @@ public class Empleado {
     private List<Incidencia> incidencias;
     
     // CONSTRUCTOR
-    public Empleado(String nombreUsuario, String contrasena, String nombreCompleto, String telefono, List<Incidencia> incidencias){
+    public Empleado(int id, String nombreUsuario, String contrasena, String nombreCompleto, String telefono, List<Incidencia> incidencias){
+        this.id = id;
         this.nombreUsuario = nombreUsuario;
         this.contrasena = contrasena;
         this.nombreCompleto = nombreCompleto;
@@ -34,7 +36,17 @@ public class Empleado {
     public Empleado(){
         
     }
-
+    
+    // GETTERS Y SETTERS
+    
+    public int getId(){
+        return id;
+    }
+    
+    public void setId(int id){
+        this.id = id;
+    }
+    
     public String getNombreUsuario() {
         return nombreUsuario;
     }

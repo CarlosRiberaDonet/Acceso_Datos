@@ -18,6 +18,8 @@ public class Tema4 {
      */
     public static void main(String[] args) {
         
+        
+        
         Scanner sc = new Scanner(System.in);
         String menu = "";      
         
@@ -26,7 +28,7 @@ public class Tema4 {
             System.out.println("a: Crear Empleado");
             System.out.println("b: Login");
             System.out.println("c: Modificar Empleado");
-            System.out.println("d: Cambiar Contraseña");
+            System.out.println("d: Cambiar Contrasena");
             System.out.println("e: Eliminar Empleado");
             System.out.println("f: Salir");
 
@@ -36,21 +38,66 @@ public class Tema4 {
                 case "a":
                 {
                     EmpleadoController.CrearEmpleado();
+                    break;
                 }
                 case "b":{
-                    EmpleadoController.Login();
+                    if(EmpleadoController.Login()){
+                        MenuIncidencias();
+                    }
+                    break;
                 }
                 case "c":
                 {
                     EmpleadoController.ModificarEmpleado();
+                    break;
                 }
                 case "d":{
-                    // Cambiar contraseña
+                    EmpleadoController.CambiarPassword();
+                    break;
                 }
                 case "e":{
-                    // Eliminar empleado
+                    EmpleadoController.EliminarEmpleado();
+                    break;
+                }
+                case "f":{
+                    System.out.println("HASTA LA PROXIMA!");
+                    break;
+                }
+                default:{
+                    System.out.println("Opcion no valida");
                 }
             }
         } while(!menu.equals("f"));   
-    } 
+    }
+    
+    public static void MenuIncidencias(){
+        String menu = "";
+        
+        do{
+            switch(menu){
+                case "a":{
+                    // Obtener objeto incidencia mediante su id
+                }
+                case "b":{
+                    // Obtener lista de todas las incidencias
+                }
+                case "c":{
+                    // Insertar una incidencia a partir de un objeto de clase Incidencia
+                }
+                case "d":{
+                    // Obtener las incidencias creadas por un empleado concreto
+                }
+                case "e":{
+                    // Obtener las inciencias destinadas para un empleado a partir de un objeto de clase Empleado
+                }
+                case "f":{
+                    System.out.println("Saliendo menu principal");
+                    break;
+                }
+                default:{
+                    System.out.println("Opcion no valida");
+                }
+            }   
+        } while(!menu.equals("f"));
+    }
 }

@@ -8,7 +8,6 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import entidades.Empleado;
-import java.util.List;
 
 
 /**
@@ -20,7 +19,7 @@ public class DAO {
     
     private static ObjectContainer db = null; // Conexión estatica
     
-    // Abrre la base de datos si aún no está abierta
+    // Método para abrir la conexion
     public DAO(){
 
         if (db == null) {
@@ -30,24 +29,36 @@ public class DAO {
     
     // Método para cerrar la conexión
     public void closeDB(){
-        if(db != null){
-            db.close();
-            db = null;
-            System.out.println("Conexion cerrada correctamente");
-        }
+        
+        try{
+            if(db != null){
+                db.close();
+                db = null;
+                System.out.println("Conexion cerrada correctamente");
+            }
+        } catch(Exception e){
+            System.out.println("Error al cerrar la conexion");
+        }    
     }
     
-    // Método para guardar un objeto
-    public void SaveObject(Object o){
-        db.store(o);
-        System.out.println("Objeto guardado ");
-    }
-    
+    // Método para obtener la conexión
     public static ObjectContainer getDB(){
         return db;
     }
     
-    // Método para buscar nombre de usuario
+    // Método para guardar un objeto
+    public void SaveObject(Object objeto){
+        try{
+            db.store(objeto);
+            db.commit();
+            System.out.println("Objeto guardado ");
+            
+        } catch(Exception e){
+            System.out.println("El error al guardar el objeto " + objeto);
+        }     
+    }
+     
+    // Método para buscar empleado por nombre de usuario
     public boolean BuscarNombreUsuario(String nombreUsuario){
         
         // Obtengo la conexión a db4o       
@@ -57,23 +68,27 @@ public class DAO {
         return !found.isEmpty(); // Si encuentra el nombreUsuario, devuelve true
     }
     
+    // Método para comprobar usuario y contraseña
     public boolean ComprobarCredenciales(String nombreUsuario, String contrasena){
-             
-        // Si el usuario existe
-        if(BuscarNombreUsuario(nombreUsuario)){          
-            Empleado objetoEmpleado = new Empleado(nombreUsuario); // Creo un objeto Empleado          
-            ObjectSet<Empleado> found = db.queryByExample(objetoEmpleado); // Busco en db4o
-            
-            
-            Empleado empleado = found.next(); // Obtengo el objeto Empleado almacenado en archivo.db
-            
-            return empleado.getContrasena().equals(contrasena); // Compruebo que la contraseña introducida por el USR
+          
+        try{
+            // Si el usuario existe
+            if(BuscarNombreUsuario(nombreUsuario)){          
+                Empleado objetoEmpleado = new Empleado(nombreUsuario); // Creo un objeto Empleado          
+                ObjectSet<Empleado> found = db.queryByExample(objetoEmpleado); // Busco en db4o          
+
+                Empleado empleado = found.next(); // Obtengo el objeto Empleado almacenado en archivo.db            
+                return empleado.getContrasena().equals(contrasena); // Compruebo que la contraseña introducida por el USR
+            } 
+        }catch(Exception e){
+            System.out.println("Error al intentar comprobar las credenciales");
         }
         System.out.println("Usuario no encontrado o contraseña incorrecta");
         
         return false;
     }
     
+    // Método para obtener un empleado mediante su nombre de usuario
     public Empleado getEmpleado(String nombreUsuario){
         
         Empleado empleado = new Empleado(nombreUsuario);
@@ -85,4 +100,31 @@ public class DAO {
         
         return null;
     }
+    
+    // Método para eliminar un empleado mediante su nombre de usuario
+    public boolean DeleteObject(String nombreUsuario){
+              
+        try{
+            // Creo un objeto Empleado con el nombreUsuario que queremos eliminar
+            Empleado empleado = new Empleado(nombreUsuario);
+            empleado.setNombreUsuario(nombreUsuario);
+            
+            // Busco coincidencias en archivo.db
+            ObjectSet<Empleado> found = db.queryByExample(empleado);
+            
+            // Recorro los resultado
+            while(found.hasNext()){
+               db.delete(found.next()); // Elimino el objeto Empleado
+            }
+            // Confirmo la eliminación
+            db.commit();           
+            return true;
+            
+        } catch(Exception e){
+            System.out.println("Error al eliminar el usuario" + e.getMessage());
+        }
+        return false;
+    }
+    
+    // Método para obtener incidencia mediante su id
 }
