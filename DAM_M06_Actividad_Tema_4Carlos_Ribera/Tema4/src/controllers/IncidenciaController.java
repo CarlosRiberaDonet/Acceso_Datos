@@ -8,9 +8,11 @@ import com.db4o.ObjectSet;
 import entidades.Empleado;
 import entidades.Incidencia;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import utils.Validation;
 
 /**
@@ -46,7 +48,7 @@ public class IncidenciaController {
         int nuevoid = CalcularIdIncidencia();
         LocalDateTime fecha = LocalDateTime.now();
         
-        String usuarioOrigen = Validation.SolicitaString("Introduzca el nombre de usuario del empleado de origen", 30);
+        String usuarioOrigen = Validation.SolicitaString("Introduzca el nombre de usuario del empleado de origen", 30).toLowerCase();
         
         // Si el usuario no existe salgo del método
         if(!dao.BuscarNombreUsuario(usuarioOrigen)){
@@ -56,7 +58,7 @@ public class IncidenciaController {
         }
         Empleado empleadoOrigen = dao.getEmpleado(usuarioOrigen);
         
-        String usuarioDestino = Validation.SolicitaString("Introduzca el nombre de usuario del empleado de destino", 30);
+        String usuarioDestino = Validation.SolicitaString("Introduzca el nombre de usuario del empleado de destino", 30).toLowerCase();
         
         if(!dao.BuscarNombreUsuario(usuarioDestino)){
              System.out.println("No se ha encontrado el nombre de usuario introducido");
@@ -72,7 +74,14 @@ public class IncidenciaController {
         
         Incidencia nuevaIncidencia = new Incidencia(nuevoid, fecha, empleadoOrigen, empleadoDestino, detalle, tipo);
         
+        empleadoOrigen.getIncidencias().add(nuevaIncidencia);
+        empleadoDestino.getIncidencias().add(nuevaIncidencia);
+        
+        dao.SaveObject(empleadoOrigen);
+        dao.SaveObject(empleadoDestino);
+        
         dao.SaveObject(nuevaIncidencia);
+        
         
     }
     // Método para obtener incidencia por id
@@ -99,6 +108,53 @@ public class IncidenciaController {
         for(Incidencia i : incidenciasList){
             System.out.println("------ INCIDENCIA ------");
             System.out.println(i.toString());
+        }
+    }
+    
+    // Método para obtener inciencias de un empleado
+    public static void InidenciasEmpleadoOrigen(){
+        
+        List<Incidencia> incidencias = new ArrayList<>();
+        
+        String nombreUsuario = Validation.SolicitaString("Ingrese el nombre de usuario", 30).toLowerCase();
+        
+        if(dao.BuscarNombreUsuario(nombreUsuario)){
+            Empleado empleado  = dao.getEmpleado(nombreUsuario);
+        
+            List<Incidencia> incidenciasList = dao.getIncidenciasList();
+            
+            for(Incidencia i : incidenciasList){
+                    if(i.getEmpleadoOrigen().equals(empleado)){
+                        incidencias.add(i);
+                        System.out.println(i.toString());
+                    }
+            }
+            return;
+        }
+         System.out.println("No se ha encontrado ningun usuario con el nombre proporcionado"); 
+    }
+    
+    public static void InidenciasEmpleadoDestino(){
+        
+        
+        List<Incidencia> incidencias = new ArrayList<>();
+        
+        String nombreUsuario = Validation.SolicitaString("Ingrese el nombre de usuario", 30);
+        
+        if(dao.BuscarNombreUsuario(nombreUsuario)){
+            Empleado empleado  = dao.getEmpleado(nombreUsuario);
+            
+             List<Incidencia> incidenciasList = dao.getIncidenciasList();
+            
+           incidencias =  empleado.getIncidencias();
+           
+            for(Incidencia i : incidenciasList){
+                    if(i.getEmpleadoDestino().equals(empleado)){
+                        incidencias.add(i);
+                         System.out.println(i.toString());
+                    }
+            }
+            return;
         }
     }
     

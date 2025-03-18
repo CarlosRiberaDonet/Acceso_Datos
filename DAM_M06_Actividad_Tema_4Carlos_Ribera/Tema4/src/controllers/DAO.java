@@ -159,4 +159,16 @@ public class DAO {
         }
         return incidenciasList; // Devuelvo la lista de incidencias
     }
+    
+     public List<Incidencia> IncidenciasEmpleado(String nombreUsuario){
+        
+        List<Incidencia> incidenciasList = new ArrayList<>();
+        try{
+             ObjectSet<Incidencia> result = db.query(Incidencia.class); // Obtengo todas las incidencias
+             incidenciasList.addAll(result);// Añado todas las incidencias a incidenciasList
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return incidenciasList; // Devuelvo la lista de incidencias
+    }
 }

@@ -86,6 +86,7 @@ public class Incidencia {
     @Override
     public String toString(){
         return  "------ INCIDENCIA ------ \n" +
+                "ID: " + id + "\n" +
                 "FECHA: " + fecha + " \n" +
                 "ORIGEN: " + (empleadoOrigen != null ? empleadoOrigen.getNombreCompleto() : "N/A") + " \n" +
                 "DESTINO: " + (empleadoDestino != null ? empleadoDestino.getNombreCompleto() : "N/A") + " \n" +

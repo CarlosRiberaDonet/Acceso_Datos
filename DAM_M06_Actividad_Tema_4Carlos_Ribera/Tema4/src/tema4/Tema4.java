@@ -104,11 +104,12 @@ public class Tema4 {
                     break;
                 }
                 case "d":{
-                    // Obtener las incidencias creadas por un empleado concreto
+                   IncidenciaController.InidenciasEmpleadoOrigen();
                     break;
                 }
                 case "e":{
                     // Obtener las inciencias destinadas para un empleado a partir de un objeto de clase Empleado
+                     IncidenciaController.InidenciasEmpleadoDestino();
                     break;
                 }
                 case "f":{
