@@ -9,6 +9,8 @@ import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import entidades.Empleado;
 import entidades.Incidencia;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -84,7 +86,7 @@ public class DAO {
         }catch(Exception e){
             System.out.println("Error al intentar comprobar las credenciales");
         }
-        System.out.println("Usuario no encontrado o contraseña incorrecta");
+        System.out.println("Usuario no encontrado o password incorrecto");
         
         return false;
     }
@@ -128,15 +130,33 @@ public class DAO {
     }
     
     // Método para obtener incidencia mediante su id
-    public Incidencia  getIncidencia(int id){
+    public Incidencia getIncidencia(int id){
         
-        Incidencia incidencia = new Incidencia();     
-        ObjectSet<Incidencia> result = db.queryByExample(incidencia);
+        try{
+            Incidencia incidencia = new Incidencia(); // Creo el objeto para la busqueda
+            incidencia.setId(id); // Establezo el id a buscar
+            
+            ObjectSet<Incidencia> result = db.queryByExample(incidencia);
         
-        if(!result.isEmpty()){
-            return result.next();
+            if(!result.isEmpty()){
+                return result.next(); // Retorno la incidencia encontrada
+            } 
+            
+        } catch(Exception e){
+            e.printStackTrace();
+        } 
+        return null; // Retorno null si no encuentra ninguna incidencia
+    }
+    
+    public List<Incidencia> getIncidenciasList(){
+        
+        List<Incidencia> incidenciasList = new ArrayList<>();
+        try{
+             ObjectSet<Incidencia> result = db.query(Incidencia.class); // Obtengo todas las incidencias
+             incidenciasList.addAll(result);// Añado todas las incidencias a incidenciasList
+        } catch(Exception e){
+            e.printStackTrace();
         }
-        
-        return null;
+        return incidenciasList; // Devuelvo la lista de incidencias
     }
 }

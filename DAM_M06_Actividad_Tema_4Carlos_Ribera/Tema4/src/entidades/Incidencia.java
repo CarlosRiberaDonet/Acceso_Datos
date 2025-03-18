@@ -5,6 +5,7 @@
 package entidades;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 public class Incidencia {
     
     private int id;
-    private LocalDateTime fecha;
+    private String fecha;
     private Empleado empleadoOrigen;
     private Empleado empleadoDestino;
     private String detalle;
@@ -22,7 +23,7 @@ public class Incidencia {
     // CONSTRUCTOR
     public Incidencia(int id, LocalDateTime fecha, Empleado empleadoOrigen, Empleado empleadoDestino, String detalle, char tipo) {
         this.id = id;
-        this.fecha = LocalDateTime.now();
+        this.fecha = fecha.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME); //  Convertimos LocalDateTime a String
         this.empleadoOrigen = empleadoOrigen;
         this.empleadoDestino = empleadoDestino;
         this.detalle = detalle;
@@ -43,11 +44,11 @@ public class Incidencia {
     }
 
     public LocalDateTime getFecha() {
-        return fecha;
+        return LocalDateTime.parse(fecha, DateTimeFormatter.ISO_LOCAL_DATE_TIME); //  Convertimos String a LocalDateTime
     }
 
     public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
+        this.fecha = fecha.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     public Empleado getEmpleadoOrigen() {
@@ -84,12 +85,12 @@ public class Incidencia {
     
     @Override
     public String toString(){
-        return "Incidencia{" +
-                "FECHA: " + fecha +
-                "ORIGEN: " + (empleadoOrigen != null ? empleadoOrigen.getNombreCompleto() : "N/A") +
-                "DESTINO: " + (empleadoDestino != null ? empleadoDestino.getNombreCompleto() : "N/A") +
-                "DETALLE: " + detalle +
-                "TIPO: " + tipo +
-                "}";
+        return  "------ INCIDENCIA ------ \n" +
+                "FECHA: " + fecha + " \n" +
+                "ORIGEN: " + (empleadoOrigen != null ? empleadoOrigen.getNombreCompleto() : "N/A") + " \n" +
+                "DESTINO: " + (empleadoDestino != null ? empleadoDestino.getNombreCompleto() : "N/A") + " \n" +
+                "DETALLE: " + detalle + " \n" +
+                "TIPO: " + tipo + "\n"
+                ;
     }
 }

@@ -21,7 +21,7 @@ public class EmpleadoController {
         String nombreUsuario;
         boolean error; 
         
-        int id = CalcularId(); // Calculo el ID que se le asignará a Empleado
+        int id = CalcularIdEmpleado(); // Calculo el ID que se le asignará a Empleado
         
         do{
             error = false;
@@ -131,7 +131,7 @@ public class EmpleadoController {
         }
     }
     
-    public static int CalcularId(){
+    public static int CalcularIdEmpleado(){
 
         ObjectSet<Empleado> empleadosList = dao.getDB().query(Empleado.class);
         int maxId = 0;
@@ -152,7 +152,8 @@ public class EmpleadoController {
         ObjectSet<Empleado> empleadosList = dao.getDB().query(Empleado.class);
         
         for(Empleado e : empleadosList){
-            System.out.println(e.toString());        }
+            System.out.println(e.toString());
+        }
     }
             
 }

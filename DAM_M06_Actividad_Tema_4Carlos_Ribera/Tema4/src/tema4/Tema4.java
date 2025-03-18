@@ -21,7 +21,7 @@ public class Tema4 {
         
         EmpleadoController.Listar();
         
-        Scanner sc = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         String menu = "";      
         
         do{
@@ -33,7 +33,7 @@ public class Tema4 {
             System.out.println("e: Eliminar Empleado");
             System.out.println("f: Salir");
 
-            menu = sc.nextLine();
+            menu = scanner.nextLine().toLowerCase();
 
             switch(menu){
                 case "a":
@@ -43,7 +43,7 @@ public class Tema4 {
                 }
                 case "b":{
                     if(EmpleadoController.Login()){
-                        MenuIncidencias();
+                        MenuIncidencias();                       
                     }
                     break;
                 }
@@ -66,16 +66,29 @@ public class Tema4 {
                 }
                 default:{
                     System.out.println("Opcion no valida");
+                    break;
                 }
             }
         } while(!menu.equals("f"));   
     }
     
     public static void MenuIncidencias(){
-        String menu = "";
+        
+        Scanner sc = new Scanner(System.in);
+        String menuIncidencias = "";
         
         do{
-            switch(menu){
+            System.out.println("------ MENU ------");
+            System.out.println("a: BUSCAR INCIDENCIA ID");
+            System.out.println("b: LISTAR INCIDENCIAS");
+            System.out.println("c: CREAR INCIDENCIA");
+            System.out.println("d: BUSCAR INCIDENCIA CREADAS POR EMPLEADO");
+            System.out.println("e: LISTAR INCIDENCIAS DESTINADAS A EMPLEADO");
+            System.out.println("f: VOLVER AL MENU PRINCIPAL");
+            
+            menuIncidencias = sc.nextLine().toLowerCase();
+            
+            switch(menuIncidencias){
                 case "a":{
                     // Obtener objeto incidencia mediante su id
                     IncidenciaController.ObtenerIncidenciaId();
@@ -83,24 +96,30 @@ public class Tema4 {
                 }
                 case "b":{
                     // Obtener lista de todas las incidencias
+                    IncidenciaController.ObtenerListaIncidencias();
+                    break;
                 }
                 case "c":{
-                    // Insertar una incidencia a partir de un objeto de clase Incidencia
+                    IncidenciaController.CrearIncidencia();
+                    break;
                 }
                 case "d":{
                     // Obtener las incidencias creadas por un empleado concreto
+                    break;
                 }
                 case "e":{
                     // Obtener las inciencias destinadas para un empleado a partir de un objeto de clase Empleado
+                    break;
                 }
                 case "f":{
                     System.out.println("Saliendo menu principal");
                     break;
                 }
                 default:{
-                    System.out.println("Opcion no valida");
+                    System.out.println("Opcion no valida2222222222");
+                    break;
                 }
             }   
-        } while(!menu.equals("f"));
+        } while(!menuIncidencias.equals("f"));
     }
 }

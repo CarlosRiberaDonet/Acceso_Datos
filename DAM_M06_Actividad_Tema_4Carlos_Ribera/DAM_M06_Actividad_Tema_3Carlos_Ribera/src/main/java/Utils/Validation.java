@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package utils;
+package Utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -126,23 +126,5 @@ public class Validation {
             }
         } while(error);       
         return id;
-    }
-    
-    // Método para solicitar tipo de incidencia
-    public static char TipoIncidenia(String texto){
-        
-        Scanner sc = new Scanner(System.in);
-        char tipo;
-        
-        do{
-            System.out.println(texto);
-            String input = sc.next().toUpperCase();
-            
-            if(input.equals("U") ||input.equals("N")){   
-                return input.charAt(0);             
-            } else{
-                System.out.println("Error: Solo se permite U o N. Intentelo de nuevo");
-            } 
-        } while(true);
     }
 }
