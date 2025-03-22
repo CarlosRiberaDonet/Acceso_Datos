@@ -19,8 +19,6 @@ public class Tema4 {
      */
     public static void main(String[] args) {
         
-        EmpleadoController.Listar();
-        
         Scanner scanner = new Scanner(System.in);
         String menu = "";      
         
@@ -109,7 +107,7 @@ public class Tema4 {
                 }
                 case "e":{
                     // Obtener las inciencias destinadas para un empleado a partir de un objeto de clase Empleado
-                     IncidenciaController.InidenciasEmpleadoDestino();
+                     IncidenciaController.IncidenciasEmpleadoDestino();
                     break;
                 }
                 case "f":{
@@ -117,7 +115,7 @@ public class Tema4 {
                     break;
                 }
                 default:{
-                    System.out.println("Opcion no valida2222222222");
+                    System.out.println("Opcion no valida");
                     break;
                 }
             }   

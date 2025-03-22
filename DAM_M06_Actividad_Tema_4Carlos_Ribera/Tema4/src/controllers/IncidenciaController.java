@@ -9,10 +9,8 @@ import entidades.Empleado;
 import entidades.Incidencia;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 import utils.Validation;
 
 /**
@@ -106,56 +104,76 @@ public class IncidenciaController {
         List<Incidencia> incidenciasList = dao.getIncidenciasList();
         
         for(Incidencia i : incidenciasList){
-            System.out.println("------ INCIDENCIA ------");
             System.out.println(i.toString());
         }
     }
     
     // Método para obtener inciencias de un empleado
-    public static void InidenciasEmpleadoOrigen(){
+    public static void InidenciasEmpleadoOrigen(){ 
         
-        List<Incidencia> incidencias = new ArrayList<>();
+        List<Incidencia> incidencia = new ArrayList<>();
         
         String nombreUsuario = Validation.SolicitaString("Ingrese el nombre de usuario", 30).toLowerCase();
         
         if(dao.BuscarNombreUsuario(nombreUsuario)){
-            Empleado empleado  = dao.getEmpleado(nombreUsuario);
+            Empleado empleado = dao.getEmpleado(nombreUsuario);
         
-            List<Incidencia> incidenciasList = dao.getIncidenciasList();
+            if(empleado.getIncidencias() != null){
+                List<Incidencia> incidenciasList = dao.getIncidenciasList();
             
-            for(Incidencia i : incidenciasList){
-                    if(i.getEmpleadoOrigen().equals(empleado)){
-                        incidencias.add(i);
-                        System.out.println(i.toString());
-                    }
+                for(Incidencia i : incidenciasList){
+                        if(i.getEmpleadoOrigen() != null && i.getEmpleadoOrigen().equals(empleado)){
+                            incidencia.add(i);
+                            System.out.println(i.toString());
+                        }
+                } 
+                return;
+                
+            } else{
+                System.out.println("El usuario " + nombreUsuario + " no tiene incidencias creadas.");
+                return;
             }
-            return;
+            
         }
-         System.out.println("No se ha encontrado ningun usuario con el nombre proporcionado"); 
+        System.out.println("No se ha encontrado ningún usuario con el nombre proporcionado."); 
     }
     
-    public static void InidenciasEmpleadoDestino(){
-        
+    public static void IncidenciasEmpleadoDestino() {
         
         List<Incidencia> incidencias = new ArrayList<>();
-        
+
+        // Solicitar el nombre del usuario
         String nombreUsuario = Validation.SolicitaString("Ingrese el nombre de usuario", 30);
-        
-        if(dao.BuscarNombreUsuario(nombreUsuario)){
-            Empleado empleado  = dao.getEmpleado(nombreUsuario);
-            
-             List<Incidencia> incidenciasList = dao.getIncidenciasList();
-            
-           incidencias =  empleado.getIncidencias();
-           
-            for(Incidencia i : incidenciasList){
-                    if(i.getEmpleadoDestino().equals(empleado)){
-                        incidencias.add(i);
-                         System.out.println(i.toString());
-                    }
+
+        try {
+            // Verificar si el usuario existe
+            if (dao.BuscarNombreUsuario(nombreUsuario)) {
+                Empleado empleado = dao.getEmpleado(nombreUsuario);
+                
+                System.out.println("usuario encontrado: " + nombreUsuario);
+                
+                // Verificar si el empleado tiene incidencias
+                if (empleado.getIncidencias() != null) {
+                        List<Incidencia> incidenciasList = dao.getIncidenciasList();
+                            for (Incidencia i : incidenciasList) {
+                            if (i.getEmpleadoDestino() != null && i.getEmpleadoDestino().equals(empleado)) {
+                                incidencias.add(i);
+                                System.out.println(i.toString());
+                            }
+                        }
+                } else {
+                    System.out.println("El usuario " + nombreUsuario + " no tiene incidencias registradas.");
+                    return;
+                }
+            } else {
+                System.out.println("No se ha encontrado ningun usuario con el nombre proporcionado.");
             }
-            return;
+        } catch (Exception e) {
+            System.out.println("Ocurrió un error al procesar la solicitud.");
+            e.printStackTrace();
         }
     }
-    
+        
 }
+   
+
