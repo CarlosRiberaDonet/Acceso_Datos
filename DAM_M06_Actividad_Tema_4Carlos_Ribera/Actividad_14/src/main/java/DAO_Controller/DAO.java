@@ -58,11 +58,11 @@ public class DAO
     private void createDB(Connection conn) throws SQLException 
     {
         //Sentencia SQL que crea la BBDD si no existe en el servidor
-        String instruction = "create database if not exists " + JDBC_DDBB + ";";     
+        String st = "create database if not exists " + JDBC_DDBB + ";";     
         Statement stmt = null;
         stmt = conn.createStatement();
         //La clase Statemen nos permite ejecutar sentencias SQL
-        stmt.executeUpdate(instruction);
+        stmt.executeUpdate(st);
         //Liberamos los recursos de la comunicación   
         stmt.close();
     }
@@ -293,13 +293,13 @@ public class DAO
     {
         List<Alumno> alumnos = new ArrayList<>();
         Connection conn = null;
-        Statement instruction = null;
+        Statement st = null;
         ResultSet rs = null;
         try 
         {
             conn = conexion();
-            instruction = conn.createStatement();
-            rs = instruction.executeQuery(SQL_SELECT_ALL);
+            st = conn.createStatement();
+            rs = st.executeQuery(SQL_SELECT_ALL);
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
@@ -321,9 +321,9 @@ public class DAO
                 {
                     rs.close();
                 }
-                if (instruction != null) 
+                if (st != null) 
                 {
-                    instruction.close();
+                    st.close();
                 }
                 disconnect(conn);
             } catch (SQLException ex) 
