@@ -109,7 +109,6 @@ public class DAO
             instruction.setDouble(4, alumno.getMedia());
             //Ejecutar la inserción y obtener la cantidad de registros afectados
             registros  = instruction.executeUpdate();
-            
             //Recupero el ID generado por la base de datos            
             nuevoId = instruction.getGeneratedKeys();
             //Compruebo si hay un "id" nuevo generado
