@@ -14,6 +14,7 @@ import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
 import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
+import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.modules.XQueryService;
 
@@ -71,5 +72,35 @@ public class GestorXML {
         empleadosList.add(empleado);
         } 
         return empleadosList; 
+    }
+    
+    public void insertarEmpleado(Empleado empleado) throws XMLDBException, Exception{
+        
+        try{
+            // Me conecto a la BS
+            Collection col = conectarBD();
+
+            // Obtengo el servicio XQueryService para ejecutar consultas
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+
+            // Construyo el bloque XML que representa el nuevo empleado
+            String xmlEmpleado = "<empleado>" +
+                                    "<usuario>" + empleado.getNombreUsuario() + "</usuario>" +
+                                    "<password>" + empleado.getPassword() + "</password>" +
+                                    "<nombre>" + empleado.getNombre() + "</nombre>" +
+                                    "<apellidos>" + empleado.getApellidos() + "</apellidos>" +
+                                    "<direccion>" + empleado.getDireccion() + "</direccion>" +
+                                    "<telefono>" + empleado.getTelefono() + "</telefono>" +
+                                "</empleado>";
+
+            // Construyo la consulta XQuery para inserción
+            String consulta = "update insert " + xmlEmpleado + "  into doc(\"empleados.xml\")/empleados"; // Inserto el bloque <empleado> en el nodo raíz <empleados>
+
+           // Ejecuto la consulta
+           servicio.query(consulta);
+           col.close(); // Libero recursos
+        } catch(Exception e){
+            System.out.println("Error al insertar el empleado: " + e.getMessage());
+        }  
     }
 }

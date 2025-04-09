@@ -19,18 +19,20 @@ import utils.Utils;
 public class EmpleadoController {
     private static List<Empleado> empleadosList = new ArrayList<>();
        
-    public static void crearEmpleado(){
+    public static void crearEmpleado() throws Exception{
         Scanner sc = new Scanner(System.in);
+        GestorXML xml = new GestorXML();
         
-        System.out.println("------ CREAR EMPLEADO ------");
         String nombreUsuario = Utils.solicitaString("Ingrese el nombre de usuario del nuevo empleado");
         String password = Utils.solicitaString("Ingrese el nuevo password");
-        String nombre = Utils.solicitaString("Ingrese el nombre del empelado");
-        String apellidos = Utils.solicitaString("Ingrese el nombre completo");
+        String nombre = Utils.solicitaString("Ingrese el nombre");
+        String apellidos = Utils.solicitaString("Ingrese los apellidos");
         String direccion = Utils.solicitaString("Ingrese la direccion");
         String telefono = Utils.solicitaTelefono("Ingrese el numero de telefono");
         
         Empleado nuevoEmpleado = new Empleado(nombreUsuario, password, nombre, apellidos, direccion, telefono);  
+        xml.insertarEmpleado(nuevoEmpleado);
+        System.out.println("Empleado " + nuevoEmpleado.getNombre() + " " + nuevoEmpleado.getApellidos() + " insertado exitosamente.");
     }
     
     public static Empleado leerDomEmpleado(NodeList datosEmpleado){
