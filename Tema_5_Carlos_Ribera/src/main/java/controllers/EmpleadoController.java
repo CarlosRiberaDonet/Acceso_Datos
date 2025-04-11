@@ -56,9 +56,7 @@ public class EmpleadoController {
                  
                  // Guardo el nombre de la etiqueta y su contenido
                  String nombreEtiqueta = nodo.getNodeName();
-                 String valorTexto = nodo.getTextContent();
-                 
-         
+                 String valorTexto = nodo.getTextContent();        
 
                  
                  switch(nombreEtiqueta){
@@ -95,5 +93,68 @@ public class EmpleadoController {
         Empleado empleado = new Empleado(nombreUsuario, password, nombre, apellidos,direccion, telefono);
         
         return empleado; // Devuelvo el objeto empleado
+    }
+    
+    public static boolean login() throws Exception{
+        
+        GestorXML xml = new GestorXML();
+        
+        String nombreUsuario = Utils.solicitaString("Ingrese el nombre de usuario");
+        String password = Utils.solicitaString("Ingrese el password");
+        
+        if(xml.validarEntrada(nombreUsuario, password)){
+            System.out.println("Login correcto");
+            return true;
+        } else {
+            System.out.println("login incorecto");
+            return false;
+        }
+    }
+    
+    public static Empleado modificarPerfil() throws Exception{
+        
+        GestorXML xml = new GestorXML();
+        
+        // Solicito input al USR
+        String nombre = Utils.solicitaString("Ingrese el nombre del empleado");
+        String apellidos = Utils.solicitaString("Ingrese los apellidos del empleado");
+        
+        // Llamo al método que comprueba si existe algún empleado con el nombre y apellidos introducidos por el USR
+        Empleado empleado = xml.modificarEmpleado(nombre, apellidos);
+        
+        
+        if(empleado != null){ // Si el empleado existe
+            System.out.println("S/N");
+            if(Utils.solicitaConfirmacion("Quiere modificar el nombre de usuario?")){
+                String nuevoNombreUsuario = Utils.solicitaString("Ingrese el nuevo nombre de usuario");
+                empleado.setNombreUsuario(nuevoNombreUsuario);  
+            }
+             if(Utils.solicitaConfirmacion("Quiere modificar el password del usuario?")){
+                 String nuevopassword = Utils.solicitaString("Ingrese el nuevo password");
+                 empleado.setPassword(nuevopassword);
+             }
+            if(Utils.solicitaConfirmacion("Quiere modificar el nombre del empleado?")){
+                String nuevonombre = Utils.solicitaString("Ingrese el nuevo nombre del empleado");
+                empleado.setNombre(nuevonombre);
+            }
+            if(Utils.solicitaConfirmacion("Quiere modificar los apellidos del empleado?")){
+                String nuevoapellidos = Utils.solicitaString("Ingrese los nuevos apellidos");
+                empleado.setApellidos(nuevoapellidos);
+            }
+            if(Utils.solicitaConfirmacion("Quiere modificar la direccion del empleado?")){
+                String nuevodireccion = Utils.solicitaString("Ingrese la nueva direccion");
+                empleado.setDireccion(nuevodireccion);
+            }
+            if(Utils.solicitaConfirmacion("Quiere modificar el numero de telefono del empleado?")){
+                String nuevotelefono = Utils.solicitaTelefono("Ingrese el nuevo numero de telefono");
+                empleado.setTelefono(nuevotelefono);
+            }
+        }
+        // Si el empleado no existe
+        else { 
+            System.out.println("No se ha encontrado ningun empleado con el nombre y apellidos proporcionados");
+        }
+        System.out.println("Empleado modificado correctamente");
+        return empleado;
     }
 }

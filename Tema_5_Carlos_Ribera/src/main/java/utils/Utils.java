@@ -55,4 +55,27 @@ public class Utils {
         }while(error);
         return input;
     }
+    
+    public static boolean solicitaConfirmacion(String mensaje){
+        
+        Scanner sc = new Scanner(System.in);
+        String input;
+        boolean modificar = false;
+        boolean error;
+        
+        do{
+            error = false;                 
+            System.out.println(mensaje);
+            input = sc.nextLine().toLowerCase();
+            if(input.equals("s")){
+                modificar = true;
+            } else if(input.equals("n")){
+                modificar = false;
+            } else{
+                 System.out.println("pulse S para modificar o N si no desea modificar");  
+                error = true;
+            }        
+        } while(error);
+        return modificar;
+    }
 }

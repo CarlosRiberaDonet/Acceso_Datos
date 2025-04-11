@@ -4,6 +4,7 @@
  */
 package controllers;
 
+import static controllers.EmpleadoController.leerDomEmpleado;
 import java.util.ArrayList;
 import java.util.List;
 import modelos.Empleado;
@@ -29,7 +30,7 @@ public class GestorXML {
     private final String PASSWORD = "admin";
     private final String COLECCION = "/db/sistema";
     
-    public Collection conectarBD() throws Exception{
+    public Collection conexionBD() throws Exception{
         
         // Cargo el driver
         Class<?> cl = Class.forName(DRIVER);
@@ -50,7 +51,7 @@ public class GestorXML {
         
         // Obtener el servicio XQueryService desde la colección, versión 1.
         // Este servicio nos permitirá ejecutar consultas XQuery
-        Collection col = conectarBD();
+        Collection col = conexionBD();
         // Obtener XQueryService
         XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
         
@@ -78,7 +79,7 @@ public class GestorXML {
         
         try{
             // Me conecto a la BS
-            Collection col = conectarBD();
+            Collection col = conexionBD();
 
             // Obtengo el servicio XQueryService para ejecutar consultas
             XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
@@ -102,5 +103,67 @@ public class GestorXML {
         } catch(Exception e){
             System.out.println("Error al insertar el empleado: " + e.getMessage());
         }  
+    }
+    
+    public boolean validarEntrada(String nombreUsuario, String password) throws Exception{
+        
+        // Me conecto a la BD
+        Collection col = conexionBD();
+        
+        // Obtengo el servicio XQuery para ejecutar consultas
+        XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+        
+        // Construyo la consulta
+        String xmlLogin =   "for $e in doc(\"empleados.xml\")//empleado " +
+                            "where $e/usuario = \"" + nombreUsuario + "\" " +
+                            "and $e/password = \"" + password + "\" " +
+                            "return $e";
+
+        // Ejecuto la consulta
+        ResourceSet resultado = servicio.query(xmlLogin);
+        ResourceIterator iterator = resultado.getIterator();
+        
+        // Si hay al menos un resultado, el usuario y password conciden
+        if(iterator.hasMoreResources()){
+            return true;
+        }
+        
+        // Si no hay resultado, devuelvo false
+        return false;
+    }
+    
+    public Empleado modificarEmpleado(String nombre, String apellidos) throws Exception{
+        
+        Collection col = conexionBD();
+        
+        XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+        
+        String xmlBuscarEmpleado =   "for $e in doc(\"empleados.xml\")//empleado " + 
+                                "where $e/nombre = \"" + nombre + "\" " +
+                                "and $e/apellidos = \"" + apellidos + "\" " +
+                                 "return $e";
+        
+        ResourceSet resultado = servicio.query(xmlBuscarEmpleado);
+        ResourceIterator iterator = resultado.getIterator();
+        
+        // Si hay al menos un resultado
+        if(iterator.hasMoreResources()){
+            // Obtengo el primer recurso devuelto
+            XMLResource res = (XMLResource) iterator.nextResource();
+            
+            // Extraigo el contenido del nodo como estructura DOM
+            Node nodo = res.getContentAsDOM(); // representa el nodo <empleado>
+            
+            // Obtengo los nodos hijos del nodo <empleado>
+            NodeList datosEmpleado = nodo.getChildNodes();
+            
+            // Llamo al método que convierte el NodeList en un objeto de tipo Empleado
+            Empleado empleado = leerDomEmpleado(datosEmpleado);
+            
+            // Devuelvo el objeto Empleado creado
+            return empleado;
+        }
+        
+       return null; // Si no encuentra el empleado, devuelvo null
     }
 }
