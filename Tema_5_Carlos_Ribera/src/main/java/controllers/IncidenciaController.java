@@ -37,8 +37,11 @@ public class IncidenciaController {
          
          Incidencia incidencia = xml.getIncidencia(id);
          
-         System.out.println(incidencia);
-        
+         if(incidencia != null){
+             System.out.println(incidencia);
+         } else{
+             System.out.println("No se ha encontrado ninguna incidencia con el id introducido"); 
+         }     
      }
      
      public static Incidencia leerDomIncidencia(NodeList datosIncidencia){
@@ -51,14 +54,16 @@ public class IncidenciaController {
          String detalleIncidencia = null;
          char tipoIncidencia = ' ';
           
-         // recorro los nodos hijo
+         // Recorro los nodos del elemento <incidencia>
          for(int i = 0; i < datosIncidencia.getLength(); i++){
              Node nodo = datosIncidencia.item(i);
              
+             // Solo proceso los nodos que sean etiquetas
              if(nodo.getNodeType() == Node.ELEMENT_NODE){
                  String nombreEtiqueta = nodo.getNodeName();
                  String valorTexto = nodo.getTextContent();
                  
+                 // Asigno valores a las variables según la etiqueta
                  switch(nombreEtiqueta){
                      
                      case "id":{
@@ -78,20 +83,18 @@ public class IncidenciaController {
                          break;
                      }
                      case "tipo":{
-                         tipoIncidencia =  valorTexto.charAt(0);
+                         tipoIncidencia =  valorTexto.charAt(0); // Cojo el primer
                          break;
                      }
                      case "fechahora":{
                          fechaHora = valorTexto;
                          break;
                      }
-                 }        
-                 // Creo y devuelvo el objeto Incidencia
-                 return new Incidencia(id, fechaHora, empleadoOrigen, empleadoDestino, detalleIncidencia, tipoIncidencia);
+                 }         
              }
-         }
-         
-         return null;
+        }
+        // Creo y devuelvo el objeto Incidencia
+        return new Incidencia(id, fechaHora, empleadoOrigen, empleadoDestino, detalleIncidencia, tipoIncidencia);
      }
      
      public static void obtenerListaIncidencias(){
@@ -101,5 +104,12 @@ public class IncidenciaController {
          for(Incidencia i : incidenciasList){
              System.out.println(i);
          }
+     }
+     
+     public static Incidencia crearIncidencia(){
+         
+         // int id = calcularIdIncidencia();
+         
+         return null;
      }
 }

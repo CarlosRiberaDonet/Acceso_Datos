@@ -386,4 +386,26 @@ public class GestorXML {
  
         return incidenciasList;
     }
+    
+    public int getIdIncidencia(){
+        
+        Collection col = null;
+        int id = 0;
+        
+        try{
+            col = conexionBD();
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+            
+            String obtenerId = "max(for $i in doc(\"incidencias.xml\")//incidencia return xs:int($i/id))";
+            
+            
+        } catch(XMLDBException e){
+            
+        } finally{
+            if(col != null){
+                col.close();
+            }
+        }
+        return -1;
+    }
 }

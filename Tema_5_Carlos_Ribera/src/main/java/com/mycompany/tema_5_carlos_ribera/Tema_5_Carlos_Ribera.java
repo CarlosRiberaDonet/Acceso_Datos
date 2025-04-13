@@ -21,8 +21,6 @@ public class Tema_5_Carlos_Ribera {
    
     } 
     
-    CUANDO OBTENGO UNA INCIDENCIA MEDIANTE SU ID, ESTA MUESTRA EL NUMERO DE ID INTRODUCIDO PERO EL RESTO DE CAMPOS ESTA EN NULL
-    
      public static void menuPrincipal(){
         Scanner sc = new Scanner(System.in);
         String menu = null;
@@ -83,7 +81,7 @@ public class Tema_5_Carlos_Ribera {
          String menu = "";
          
          do{
-            System.out.println("------ MENU LOGIN------");
+            System.out.println("------ MENU LOGIN ------");
             System.out.println("a: Buscar Incidencia");
             System.out.println("b: Listar Incidencias");
             System.out.println("c: Crear Incidencia");
@@ -106,7 +104,7 @@ public class Tema_5_Carlos_Ribera {
                     }                                      
                 case "c":{
                     System.out.println("------ CREAR INCIDENCIA ------");
-                    
+                    IncidenciaController.crearIncidencia();
                     break;
                 }
                 case "d":{
