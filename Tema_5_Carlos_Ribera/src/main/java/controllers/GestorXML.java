@@ -4,10 +4,13 @@
  */
 package controllers;
 
+import controllers.EmpleadoController;
+import controllers.IncidenciaController;
 import static controllers.EmpleadoController.leerDomEmpleado;
 import java.util.ArrayList;
 import java.util.List;
 import modelos.Empleado;
+import modelos.Incidencia;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xmldb.api.DatabaseManager;
@@ -16,8 +19,10 @@ import org.xmldb.api.base.Database;
 import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
-import org.xmldb.api.modules.XMLResource;
 import org.xmldb.api.modules.XQueryService;
+import org.xmldb.api.modules.XMLResource;
+
+import utils.Utils;
 
 /**
  *
@@ -30,56 +35,82 @@ public class GestorXML {
     private final String PASSWORD = "admin";
     private final String COLECCION = "/db/sistema";
     
-    public Collection conexionBD() throws Exception{
+    public Collection conexionBD(){
         
-        // Cargo el driver
-        Class<?> cl = Class.forName(DRIVER);
-        // Creo instancia de Database
-        Database dataBase = (Database) cl.getDeclaredConstructor().newInstance();
-        // Registrola la BD en DatabaseManager
-        DatabaseManager.registerDatabase(dataBase);
-        // Obtengo la colección
-        Collection col = DatabaseManager.getCollection(URI + COLECCION, USUARIO, PASSWORD);   
+        Collection col = null;
+        
+        try{
+            // Cargo el driver
+            Class<?> cl = Class.forName(DRIVER);
+            // Creo instancia de Database
+            Database dataBase = (Database) cl.getDeclaredConstructor().newInstance();
+            // Registrola la BD en DatabaseManager
+            DatabaseManager.registerDatabase(dataBase);
+            // Obtengo la colección
+            col = DatabaseManager.getCollection(URI + COLECCION, USUARIO, PASSWORD);
+        } catch(XMLDBException e){
+            System.out.println("No ha sido posible establecer la conexion con la BD: " + URI);
+        } catch(Exception e){
+            System.out.println("Error inseperado al conectar la BD: " + e.getMessage());
+        }
         // Devuelvo la colección
         return col;
-    }
+    }   
     
-    public List<Empleado> obtenerEmpleados() throws Exception{
+     // METODOS PARA  LA CLASE EMPLEADO CONTROLLER
+    public List<Empleado> obtenerListaEmpleados(){
         
-         // Creo una lista vacía para almacenar los empleados del XML
+        Collection col = null;
+        
+        // Creo una lista vacía para almacenar los empleados del XML
         List<Empleado> empleadosList = new ArrayList<>();
         
-        // Obtener el servicio XQueryService desde la colección, versión 1.
-        // Este servicio nos permitirá ejecutar consultas XQuery
-        Collection col = conexionBD();
-        // Obtener XQueryService
-        XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
-        
-        // Defino la consulta XQuery para recuperar todos los nodos <empleado>
-        String consulta = "for $e in doc(\"empleados.xml\")//empleado return $e";
-        
-        // Ejecuto la consulta y guardo el resultado
-        ResourceSet resultados = servicio.query(consulta);
-        // Recorrer los resultados
-        ResourceIterator iterator = resultados.getIterator();
-        while(iterator.hasMoreResources()){
-        XMLResource res = (XMLResource) iterator.nextResource();
-        // Obtengo el nodo raíz
-        Node empleadoNode = res.getContentAsDOM();
-        
-        NodeList datosEmpleado = empleadoNode.getChildNodes();
-        // llamar a leerDoomempleado y pasarle datosEmpleado
-        Empleado empleado = EmpleadoController.leerDomEmpleado(datosEmpleado);
-        empleadosList.add(empleado);
-        } 
+        try{
+            // Obtener el servicio XQueryService desde la colección, versión 1.
+            col = conexionBD();
+            // Obtener XQueryService
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+
+            // Defino la consulta XQuery para recuperar todos los nodos <empleado>
+            String consulta = "for $e in doc(\"empleados.xml\")//empleado return $e";
+
+            // Ejecuto la consulta y guardo el resultado
+            ResourceSet resultados = servicio.query(consulta);
+            // Recorrer los resultados
+            ResourceIterator iterator = resultados.getIterator();
+            while(iterator.hasMoreResources()){
+            XMLResource res = (XMLResource) iterator.nextResource();
+            // Obtengo el nodo raíz
+            Node empleadoNode = res.getContentAsDOM();
+
+            NodeList datosEmpleado = empleadoNode.getChildNodes();
+            // llamar a leerDoomempleado y pasarle datosEmpleado
+            Empleado empleado = EmpleadoController.leerDomEmpleado(datosEmpleado);
+            empleadosList.add(empleado);
+            } 
+        } catch(XMLDBException e){
+            System.out.println("Error al intentar obtener la lista de empleados " + e.getMessage());
+        } catch(Exception e){
+            System.out.println("Error inesperado al intentar obtener la lista de empleados " + e.getMessage());
+        } finally{
+            if(col != null){
+                try{
+                     col.close();
+                } catch(XMLDBException e){
+                    System.out.println("Error al cerrar la conexion: " + e.getMessage());
+                }
+            }
+        }
         return empleadosList; 
     }
     
-    public void insertarEmpleado(Empleado empleado) throws XMLDBException, Exception{
+    public void insertarEmpleado(Empleado empleado){
+        
+        Collection col = null;
         
         try{
             // Me conecto a la BS
-            Collection col = conexionBD();
+            col = conexionBD();
 
             // Obtengo el servicio XQueryService para ejecutar consultas
             XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
@@ -99,71 +130,260 @@ public class GestorXML {
 
            // Ejecuto la consulta
            servicio.query(consulta);
-           col.close(); // Libero recursos
+        } catch (XMLDBException e){
+            System.out.println("Error al intentar agregar un nuevo empleado en la BD " + e.getMessage());
+            
         } catch(Exception e){
-            System.out.println("Error al insertar el empleado: " + e.getMessage());
-        }  
+            System.out.println("Error inesaperado al agregar el nuevo empleado: " + e.getMessage());
+        } finally{
+            if(col != null){
+                try{
+                    col.close(); // Libero recursos
+                } catch(XMLDBException e){
+                    System.out.println("Error al cerrar la conexion con la BD " + e.getMessage());
+                }
+            }
+        }
     }
     
-    public boolean validarEntrada(String nombreUsuario, String password) throws Exception{
+    public boolean validarEntrada(String nombreUsuario, String password){
         
         // Me conecto a la BD
-        Collection col = conexionBD();
+        Collection col = null;
         
-        // Obtengo el servicio XQuery para ejecutar consultas
-        XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
-        
-        // Construyo la consulta
-        String xmlLogin =   "for $e in doc(\"empleados.xml\")//empleado " +
-                            "where $e/usuario = \"" + nombreUsuario + "\" " +
-                            "and $e/password = \"" + password + "\" " +
-                            "return $e";
+        try{
+            col = conexionBD();
+            // Obtengo el servicio XQuery para ejecutar consultas
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
 
-        // Ejecuto la consulta
-        ResourceSet resultado = servicio.query(xmlLogin);
-        ResourceIterator iterator = resultado.getIterator();
-        
-        // Si hay al menos un resultado, el usuario y password conciden
-        if(iterator.hasMoreResources()){
-            return true;
+            // Construyo la consulta
+            String xmlLogin =   "for $e in doc(\"empleados.xml\")//empleado " +
+                                "where $e/usuario = \"" + nombreUsuario + "\" " +
+                                "and $e/password = \"" + password + "\" " +
+                                "return $e";
+
+            // Ejecuto la consulta
+            ResourceSet resultado = servicio.query(xmlLogin);
+            ResourceIterator iterator = resultado.getIterator();
+            // Si hay al menos un resultado, el usuario y password conciden. retorna true, si no, false
+            return iterator.hasMoreResources();
+        } catch(XMLDBException e){
+            System.out.println("Error en el login: " + e.getMessage());
+        } catch(Exception e){
+            System.out.println("ERROR inesperado en el login: " + e.getMessage());
+        }
+        finally{
+            if(col != null){
+                try{
+                    col.close();
+                } catch(XMLDBException e){
+                     System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
+                }
+               
+            }
         }
         
-        // Si no hay resultado, devuelvo false
         return false;
     }
     
-    public Empleado modificarEmpleado(String nombre, String apellidos) throws Exception{
+    public Empleado obtenerEmpleado(String nombre, String apellidos){
         
-        Collection col = conexionBD();
+        Collection col = null;
         
-        XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+        try{
+            col = conexionBD();
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
         
-        String xmlBuscarEmpleado =   "for $e in doc(\"empleados.xml\")//empleado " + 
-                                "where $e/nombre = \"" + nombre + "\" " +
-                                "and $e/apellidos = \"" + apellidos + "\" " +
-                                 "return $e";
+            String xmlBuscarEmpleado =   "for $e in doc(\"empleados.xml\")//empleado " + 
+                                    "where $e/nombre = \"" + nombre + "\" " +
+                                    "and $e/apellidos = \"" + apellidos + "\" " +
+                                     "return $e";
+
+            ResourceSet resultado = servicio.query(xmlBuscarEmpleado);
+            ResourceIterator iterator = resultado.getIterator();
         
-        ResourceSet resultado = servicio.query(xmlBuscarEmpleado);
-        ResourceIterator iterator = resultado.getIterator();
-        
-        // Si hay al menos un resultado
-        if(iterator.hasMoreResources()){
-            // Obtengo el primer recurso devuelto
-            XMLResource res = (XMLResource) iterator.nextResource();
-            
-            // Extraigo el contenido del nodo como estructura DOM
-            Node nodo = res.getContentAsDOM(); // representa el nodo <empleado>
-            
-            // Obtengo los nodos hijos del nodo <empleado>
-            NodeList datosEmpleado = nodo.getChildNodes();
-            
-            // Llamo al método que convierte el NodeList en un objeto de tipo Empleado
-            Empleado empleado = leerDomEmpleado(datosEmpleado);
-            
-            // Devuelvo el objeto Empleado creado
-            return empleado;
+            // Si hay al menos un resultado
+            if(iterator.hasMoreResources()){
+                // Obtengo el primer recurso devuelto
+                XMLResource res = (XMLResource) iterator.nextResource();
+
+                // Extraigo el contenido del nodo como estructura DOM
+                Node nodo = res.getContentAsDOM(); // representa el nodo <empleado>
+
+                // Obtengo los nodos hijos del nodo <empleado>
+                NodeList datosEmpleado = nodo.getChildNodes();
+
+                // Llamo al método que convierte el NodeList en un objeto de tipo Empleado
+                Empleado empleado = leerDomEmpleado(datosEmpleado);
+
+                // Devuelvo el objeto Empleado creado
+                return empleado;
+            }
+        } catch(XMLDBException e){
+            System.out.println("Error al intentar obtener el empleado de la BD: " + e.getMessage());
+        } finally{
+            if(col != null){
+                try{
+                    col.close();
+                }catch(XMLDBException e){
+                    System.out.println("Error al cerrar la BD: " + e.getMessage());
+                }
+            }
         }
         
        return null; // Si no encuentra el empleado, devuelvo null
+    }
+    
+    public void updateEmpleado(String nombreUsuario, String nodo, String nuevoValor){
+        
+        Collection col = null;
+        try{
+            col = conexionBD();
+             XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+        
+            String update = "for $e in doc(\"empleados.xml\")//empleado " +
+                            "where $e/usuario = \"" + nombreUsuario + "\" " +
+                            "return update value $e/" + nodo + " with \"" + nuevoValor + "\"";
+
+            servicio.query(update);
+        } catch(XMLDBException e){
+            System.out.println("Error al actualizar los datos del empleado: " + e.getMessage());
+        } finally{
+            try{
+                col.close();
+            }catch(XMLDBException e){
+                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
+            } 
+        }    
+    }
+    
+    public boolean deleteUser(String nombreUsuario){
+        
+        Collection col = null;
+        try{
+            
+            col = conexionBD();
+             XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+        
+            // Verifico si el usuario existe
+            String consulta = "for $e in doc(\"empleados.xml\")//empleado " +
+                             "where $e/usuario = \"" + nombreUsuario + "\" " +
+                             "return $e";
+
+            ResourceSet resultado = servicio.query(consulta);
+            ResourceIterator iterator = resultado.getIterator();
+
+            if(iterator.hasMoreResources()){
+                // Si existe, lo elimino
+                if(Utils.solicitaConfirmacion("¿Seguro que desea eliminar el usuario " + nombreUsuario + " ?")){
+                    String delete = "update delete " +
+                                "for $e in doc(\"empleados.xml\")//empleado " +
+                                "where $e/usuario = \"" + nombreUsuario + "\" " +
+                                "return $e";
+
+                    servicio.query(delete);
+                    return true;
+                }        
+            }  
+        } catch(XMLDBException e){
+            System.out.println("Error al eliminar el empleado de la BD: " + e.getMessage());
+        } finally{
+            try{
+                col.close();
+            }catch(XMLDBException e){
+                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
+            } 
+        }    
+       
+        return false;  
+    }
+    
+    
+    // METODOS PARA  LA CLASE INCIDENCIA CONTROLLER
+    
+    public Incidencia getIncidencia(int id){
+        
+        // Establezco la conexion con la BD
+        Collection col = null;
+        
+        Incidencia incidencia = null;
+        
+        try{
+            col = conexionBD();
+             XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+        
+            // Construyo la consulta
+            String consulta = "for $i in doc(\"incidencias.xml\")//incidencia " +
+                               "where $i/id = \"" + id + "\" " +
+                               "return $i";
+
+            // Ejecuto la consulta y proceso
+            ResourceSet resultado = servicio.query(consulta);
+            ResourceIterator iterator = resultado.getIterator();
+        
+            if(iterator.hasMoreResources()){
+                XMLResource rs = (XMLResource) iterator.nextResource();
+                Node nodo = rs.getContentAsDOM();
+                
+                NodeList datosIncidencia = nodo.getChildNodes();
+                incidencia = IncidenciaController.leerDomIncidencia(datosIncidencia);
+            }  
+        }  catch(XMLDBException e){
+            System.out.println("Error al obtener la incidencia de la BD: " + e.getMessage());
+        } finally{
+            try{
+                col.close();
+            }catch(XMLDBException e){
+                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
+            } 
+        }    
+         
+        return incidencia;
+    }
+    
+    public List<Incidencia> obtenerListaIncidencias(){
+        
+        List<Incidencia> incidenciasList = new ArrayList<>();
+        Collection col = null;
+        
+        try{
+            col = conexionBD();
+            // Obtengo el sercivio XQuery de consultas
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+
+            // Defino la consulta
+            String consulta = "for $i in doc(\"incidencias.xml\")//incidencia return $i";
+
+           // Ejecuto la consulta
+           ResourceSet resultado = servicio.query(consulta);
+
+           // Recorro todos los resultados de la consulta uno a uno
+           ResourceIterator iterator = resultado.getIterator();
+
+           while(iterator.hasMoreResources()){
+               // Obtengo el recurso actual
+               XMLResource rs = (XMLResource) iterator.nextResource();
+
+               // Obtengo el contenido del recurso en forma de nodo DOM
+               Node nodo = rs.getContentAsDOM();
+
+               // Obtengo los hijos del nodo raíz
+               NodeList datosIncidenia = nodo.getChildNodes();
+
+               // Llamo a un método que transforma los datos XML en un objeto de tipo incidencia
+               Incidencia incidencia = IncidenciaController.leerDomIncidencia(datosIncidenia);
+               incidenciasList.add(incidencia);
+           }
+        } catch(XMLDBException e){
+            System.out.println("Error al obtener la lista de incidencias: " + e.getMessage());
+        } finally{
+            try{
+                col.close();
+            }catch(XMLDBException e){
+                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
+            } 
+        }   
+ 
+        return incidenciasList;
     }
 }

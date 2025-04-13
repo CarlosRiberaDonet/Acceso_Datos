@@ -9,7 +9,7 @@ package modelos;
  * @author Carlos Ribera
  */
 public class Incidencia {
-     private int id;
+    private int id;
     private String fechaHora;
     private Empleado empleadoOrigen;
     private Empleado empleadoDestino;

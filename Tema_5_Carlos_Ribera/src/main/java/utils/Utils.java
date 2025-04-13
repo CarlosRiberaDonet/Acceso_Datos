@@ -4,6 +4,7 @@
  */
 package utils;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Scanner;
  * @author Carlos Ribera
  */
 public class Utils {
-     public static String solicitaString(String mensaje){
+    public static String solicitaString(String mensaje){
         Scanner sc = new Scanner(System.in);
         String texto;
         boolean error;
@@ -30,8 +31,7 @@ public class Utils {
     }
     
     public static String solicitaTelefono(String mensaje){
-        Scanner sc = new Scanner(System.in);
-        
+        Scanner sc = new Scanner(System.in);      
         String input = "";
         boolean error;
         
@@ -77,5 +77,25 @@ public class Utils {
             }        
         } while(error);
         return modificar;
+    }
+    
+    public static int solicitaId(String mensaje){
+        
+        Scanner sc = new Scanner(System.in);
+        int input = 0;
+        boolean error;
+        do{
+            error = false;
+            try{
+                System.out.println(mensaje);
+                input = sc.nextInt();
+            }catch(InputMismatchException e){
+                System.out.println("Los caracteres no estan permitidos");
+                error = true;
+                sc.nextLine();
+            }
+        }while(error);
+  
+        return input;
     }
 }
