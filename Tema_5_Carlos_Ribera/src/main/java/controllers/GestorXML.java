@@ -128,8 +128,6 @@ public class GestorXML {
         } catch (XMLDBException e){
             System.out.println("Error al intentar agregar un nuevo empleado en la BD " + e.getMessage());
             
-        } catch(Exception e){
-            System.out.println("Error inesaperado al agregar el nuevo empleado: " + e.getMessage());
         } finally{
             cerrarConexion(col);
         }
@@ -377,6 +375,37 @@ public class GestorXML {
         }
         
         return id; // Devuelvo el valor del último id encontrado
+    }
+    
+    public void insertarIncidencia(Incidencia incidencia){
+        
+        Collection col = null;
+        
+        try{
+            col = conexionBD();
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+            
+             // Construyo el bloque XML que representa la nueva incidencia
+            String xmlIncidencia = "<incidencia>" +
+                                        "<id>" + incidencia.getId() + "</id>" +
+                                        "<origen>" + incidencia.getEmpleadoOrigen().getNombreUsuario() + "</origen>" +
+                                        "<destino>" + incidencia.getEmpleadoDestino().getNombreUsuario() + "</destino>" +
+                                        "<tipo>" + incidencia.getTipoIncidencia() + "</tipo>" +
+                                        "<detalle>" + incidencia.getDetalleIncidencia() + "</detalle>" +
+                                        "<fechahora>" + incidencia.getFechaHora() + "</fechahora>" +
+                                    "</incidencia>";
+            
+            // Construyo la consulta XQuery para la inserción de la incidencia en el XML
+            String consulta = "update insert " + xmlIncidencia + " into doc (\"incidencias.xml\")/incidencias";
+            
+            // Ejecuto la consulta
+            servicio.query(consulta);
+            System.out.println("Incidencia insertada correctamente");
+        } catch(XMLDBException e){
+            System.out.println("Error al insertar la incidencia: " + e.getMessage());      
+        } finally {
+            cerrarConexion(col);
+        }
     }
 
     public void cerrarConexion(Collection col){

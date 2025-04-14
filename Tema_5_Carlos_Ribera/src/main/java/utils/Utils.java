@@ -4,6 +4,9 @@
  */
 package utils;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -118,5 +121,35 @@ public class Utils {
         }while(!input.equals("n") && !input.equals("u"));
         
         return tipoIncidencia;
+    }
+    
+    public static String solicitaFecha(String mensaje){
+        
+        Scanner sc = new Scanner(System.in);
+        String fechaFormateada = "";
+        boolean error;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        
+        do{
+            error = false;
+            System.out.println(mensaje);
+            String input = sc.nextLine();
+            
+            try{
+                // Intento parsear la fecha introducida por el USR
+                LocalDateTime fechaHora = LocalDateTime.parse(input, formatter);
+                
+                // Si es válida, la convierto de nuevo en String para devolverla
+                fechaFormateada = fechaHora.format(formatter);
+                
+            } catch(DateTimeParseException e){
+                System.out.println("Formato de fecha y hora incorrecto. Ejemplo valido: 13/04/2025 12:30");
+                error = true;
+            }
+            
+           
+        }while(error);
+        
+        return fechaFormateada;
     }
 }

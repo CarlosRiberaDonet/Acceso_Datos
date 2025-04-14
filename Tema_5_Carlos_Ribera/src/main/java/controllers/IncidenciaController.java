@@ -47,12 +47,12 @@ public class IncidenciaController {
      public static Incidencia leerDomIncidencia(NodeList datosIncidencia){
          
          // Declaración de variables
-         int id = 0;
-         String fechaHora = null;
+         int idIncidencia = 0; 
          Empleado empleadoOrigen = new Empleado();
          Empleado empleadoDestino = new Empleado();
-         String detalleIncidencia = null;
          String tipoIncidencia = null;
+         String detalleIncidencia = null;
+         String fechaHora = null;
           
          // Recorro los nodos del elemento <incidencia>
          for(int i = 0; i < datosIncidencia.getLength(); i++){
@@ -67,7 +67,7 @@ public class IncidenciaController {
                  switch(nombreEtiqueta){
                      
                      case "id":{
-                        id = Integer.parseInt(valorTexto);
+                        idIncidencia = Integer.parseInt(valorTexto);
                         break;
                      }
                      case "origen":{
@@ -78,12 +78,12 @@ public class IncidenciaController {
                          empleadoDestino.setNombreUsuario(valorTexto);
                          break;
                      }
-                     case "detalle":{
-                         detalleIncidencia = valorTexto;
-                         break;
-                     }
                      case "tipo":{
                          tipoIncidencia =  valorTexto;
+                         break;
+                     }
+                     case "detalle":{
+                         detalleIncidencia = valorTexto;
                          break;
                      }
                      case "fechahora":{
@@ -94,7 +94,7 @@ public class IncidenciaController {
              }
         }
         // Creo y devuelvo el objeto Incidencia
-        return new Incidencia(id, fechaHora, empleadoOrigen, empleadoDestino, detalleIncidencia, tipoIncidencia);
+        return new Incidencia(idIncidencia, empleadoOrigen, empleadoDestino, tipoIncidencia, detalleIncidencia,  fechaHora);
      }
      
      public static void obtenerListaIncidencias(){
@@ -106,30 +106,48 @@ public class IncidenciaController {
          }
      }
      
-     public static Incidencia crearIncidencia(){
+     public static void crearIncidencia(){
 
-        // Primero obtengo el último número de id de <Incidencia>
-        int id = xml.getIdIncidencia();
+         // Defino e inicializo variables
+         int idIncidencia;
+         Empleado empleadoOrigen;
+         Empleado empleadoDestino;
+         String tipoIncidencia;
+         String detalle;
+         String fechaHora;
          
         // Pido datos al USR
         String nombreOrigen = Utils.solicitaString("Introduza el nombre del empleado de origen");    
         String apellidosOrigen = Utils.solicitaString("Introduzca los apellidos del empleado de origen");
         
-        // Intento obtener el objeto Empleado
-        if(xml.obtenerEmpleado(nombreOrigen, apellidosOrigen) != null){ // Si 
+        // Intento obtener el objeto Empleado (origen)
+        empleadoOrigen = xml.obtenerEmpleado(nombreOrigen, apellidosOrigen);
+        
+        // Si el empleado existe en la BD
+        if(empleadoOrigen != null){
             // Solicito los datos del empleado de destino
             String nombreDestino = Utils.solicitaString("Introduza el nombre del empleado de destino");    
             String apellidosDestino = Utils.solicitaString("Introduzca los apellidos del empleado de destino");
             
-            // Intento obtener el objeto Empleado
-            if(xml.obtenerEmpleado(nombreDestino, apellidosDestino) != null){ // Si los 2 empleados introducidos existem
-                // Solicito el resto de datos
-                String tipoIncidencia = Utils.solicitaTipoIncidencia("Ingrese el tipo de incidencia: \n N: Normal \n U: Urgente");
+            // Intento obtener el objeto Empleado (destino)
+            empleadoDestino = xml.obtenerEmpleado(nombreDestino, apellidosDestino);
+            
+            // Si los 2 empleados introducidos existen en la BD
+            if(empleadoDestino != null){ 
+                // Solicito y asigno a las respectivas varibles el resto de datos
+                idIncidencia = xml.getIdIncidencia() +1; // Obtengo el último id de <incidencia> y le sumo 1   
+                tipoIncidencia = Utils.solicitaTipoIncidencia("Ingrese el tipo de incidencia: \n N: Normal \n U: Urgente");
+                detalle = Utils.solicitaString("Introduzca los detalles de la incidencia");
+                fechaHora = Utils.solicitaFecha("Introduzca la fecha y hora: ) dd/mm/yyyy hh/mm");
                 
+                Incidencia nuevaIncidencia = new Incidencia(idIncidencia, empleadoOrigen, empleadoDestino, tipoIncidencia, detalle, fechaHora);
+        
+                xml.insertarIncidencia(nuevaIncidencia);
+            } else{
+                System.out.println("No existe ningun empleado con los datos introducidos");
             }
+        } else{
+            System.out.println("No existe ningun empleado con los datos introducidos");
         }
-        
-        
-        return null;
      }
 }

@@ -10,14 +10,14 @@ package modelos;
  */
 public class Incidencia {
     private int id;
-    private String fechaHora;
     private Empleado empleadoOrigen;
-    private Empleado empleadoDestino;
-    private String detalleIncidencia;
+    private Empleado empleadoDestino;    
     private String tipoIncidencia;
+    private String detalleIncidencia;
+    private String fechaHora;
     
     // CONSTRUCTOR
-    public Incidencia(int id, String fechaHora, Empleado empleadoOrigen, Empleado empleadoDestino, String detalleIncidencia, String tipoIncidencia) {
+    public Incidencia(int id, Empleado empleadoOrigen, Empleado empleadoDestino, String tipoIncidencia, String detalleIncidencia, String fechaHora) {
         this.id = id;
         this.fechaHora = fechaHora;
         this.empleadoOrigen = empleadoOrigen;
