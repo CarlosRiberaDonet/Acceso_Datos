@@ -4,9 +4,11 @@
  */
 package utils;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -151,5 +153,33 @@ public class Utils {
         }while(error);
         
         return fechaFormateada;
+    }
+    
+    public static String solicitaInt(String mensaje){
+        
+        Scanner sc = new Scanner(System.in);
+        int input = 0;
+        String fecha = null;
+        
+        do{
+            System.out.println(mensaje);
+            try{
+                input = sc.nextInt();
+                if(input == 1){
+                    Date fechaActual = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    fecha = sdf.format(fechaActual);           
+                } else if(input == 2){
+                    fecha = solicitaFecha("Introduzca la fecha y hora: ) dd/mm/yyyy hh/mm");
+                } else{
+                    System.out.println("Debe selecciona una opcion valida. 1/2");
+                }
+            } catch(InputMismatchException e){
+                System.out.println("Los caracteres no estan permitidos");
+                sc.nextLine();
+            }
+        }while(input != 1 && input != 2);
+        
+        return fecha; 
     }
 }

@@ -58,6 +58,17 @@ public class GestorXML {
         return col;
     }   
     
+    public void cerrarConexion(Collection col){
+        
+        if(col != null){
+            try{
+                col.close();
+            }catch(XMLDBException e){
+                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
+            }
+        }
+    }    
+    
      // METODOS PARA  LA CLASE EMPLEADO CONTROLLER
     public List<Empleado> obtenerListaEmpleados(){
         
@@ -267,7 +278,7 @@ public class GestorXML {
     
     // METODOS PARA  LA CLASE INCIDENCIA CONTROLLER
     
-    public Incidencia getIncidencia(int id){
+    public Incidencia getIncidenciaById(int id){
         
         // Establezco la conexion con la BD
         Collection col = null;
@@ -303,7 +314,7 @@ public class GestorXML {
         return incidencia;
     }
     
-    public List<Incidencia> obtenerListaIncidencias(){
+    public List<Incidencia> getIncidenciasList(){
         
         List<Incidencia> incidenciasList = new ArrayList<>();
         Collection col = null;
@@ -345,7 +356,7 @@ public class GestorXML {
         return incidenciasList;
     }
     
-    public int getIdIncidencia(){
+    public int getMaxIdIncidencia(){
         
         Collection col = null;
         int id = 0;
@@ -408,14 +419,57 @@ public class GestorXML {
         }
     }
 
-    public void cerrarConexion(Collection col){
+    public List<Incidencia> getIncicidenciasOrigen(String nombreUsuario){
         
-        if(col != null){
-            try{
-                col.close();
-            }catch(XMLDBException e){
-                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
+        List<Incidencia> incidenciasList = new ArrayList<>();
+        
+        Collection col = null;
+        
+        try{
+            col = conexionBD();
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+            String consulta = "for $i in doc(\"incidencias.xml\")//incidencia " +
+                               "where $i/origen = \"" + nombreUsuario + "\" " +
+                               "return $i";
+            ResourceSet resultado = servicio.query(consulta);
+            ResourceIterator iterator = resultado.getIterator();
+            
+            while(iterator.hasMoreResources() ){
+                XMLResource rs = (XMLResource) iterator.nextResource();
+                Node nodo = rs.getContentAsDOM();
+                NodeList datosIncidencia = nodo.getChildNodes();
+                Incidencia incidencia = IncidenciaController.leerDomIncidencia(datosIncidencia);
+                incidenciasList.add(incidencia);
             }
+            
+        } catch(XMLDBException e){
+            System.out.println("Error al obtener la lista de incidencias" + e.getMessage());
+        } finally{
+            cerrarConexion(col);
         }
-    }             
+        
+        return incidenciasList;
+    }
+    
+    // He decidido duplicar este método para practicar mas con las consultas y estructuras de XML
+    // pero la mejor opción creo que sería reutilizar el método getIncicidenciasOrigen añadiendo un parametro extra:
+    //getIncicidenciasOrigen(String nombreUsuario,String tipoBusqueda) para diferenciar si la busqueda la hace contra un empleado origen o destino
+    
+    public List<Incidencia> getIncidenciasDestino(String nombreUsuario){
+       
+        List<Incidencia> incidenciasList = new ArrayList<>();
+        
+        Collection col = null;
+        try{ 
+            col = conexionBD();
+            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+            String consulta = "";
+            
+            
+        }catch(XMLDBException e){
+            System.out.println("Error al obtener la lista de incidencias" + e.getMessage());
+        }
+       
+        return incidenciasList;
+    }
 }

@@ -35,7 +35,7 @@ public class IncidenciaController {
          
          int id = Utils.solicitaId("Introduzca el id de la incidencia que desea buscar");
          
-         Incidencia incidencia = xml.getIncidencia(id);
+         Incidencia incidencia = xml.getIncidenciaById(id);
          
          if(incidencia != null){
              System.out.println(incidencia);
@@ -99,7 +99,7 @@ public class IncidenciaController {
      
      public static void obtenerListaIncidencias(){
          
-         List<Incidencia> incidenciasList = xml.obtenerListaIncidencias();
+         List<Incidencia> incidenciasList = xml.getIncidenciasList();
          
          for(Incidencia i : incidenciasList){
              System.out.println(i);
@@ -135,10 +135,10 @@ public class IncidenciaController {
             // Si los 2 empleados introducidos existen en la BD
             if(empleadoDestino != null){ 
                 // Solicito y asigno a las respectivas varibles el resto de datos
-                idIncidencia = xml.getIdIncidencia() +1; // Obtengo el último id de <incidencia> y le sumo 1   
+                idIncidencia = xml.getMaxIdIncidencia() +1; // Obtengo el último id de <incidencia> y le sumo 1   
                 tipoIncidencia = Utils.solicitaTipoIncidencia("Ingrese el tipo de incidencia: \n N: Normal \n U: Urgente");
                 detalle = Utils.solicitaString("Introduzca los detalles de la incidencia");
-                fechaHora = Utils.solicitaFecha("Introduzca la fecha y hora: ) dd/mm/yyyy hh/mm");
+                fechaHora = Utils.solicitaInt("1- Asignar fecha y hora actual \n 2- Asignar fecha y hora manualmente");
                 
                 Incidencia nuevaIncidencia = new Incidencia(idIncidencia, empleadoOrigen, empleadoDestino, tipoIncidencia, detalle, fechaHora);
         
@@ -149,5 +149,25 @@ public class IncidenciaController {
         } else{
             System.out.println("No existe ningun empleado con los datos introducidos");
         }
+     }
+     
+     public static void listarIncidenciasCreadas(){
+         
+        String nombreUsuario = Utils.solicitaString("Introduzca el nombre de usuario");
+        
+        List<Incidencia> incidenciasList = xml.getIncicidenciasOrigen(nombreUsuario);
+        
+        if(incidenciasList != null && !incidenciasList.isEmpty()){
+            for(Incidencia i : incidenciasList){
+                System.out.println(i);
+            }
+        }
+        else{
+            System.out.println("No se han encontrado incidencias con el nombre de usuario introducido");
+        }
+     }
+     
+     public static void listarIncidenciasDestinadas(){
+         
      }
 }

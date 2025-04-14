@@ -6,6 +6,8 @@ package com.mycompany.tema_5_carlos_ribera;
 
 import controllers.EmpleadoController;
 import controllers.IncidenciaController;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -17,7 +19,8 @@ public class Tema_5_Carlos_Ribera {
 
     public static void main(String[] args) throws Exception {
  
-         menuPrincipal();
+        menuPrincipal();
+        // Estoy implementando getIncidenciasDestino de GestorXML
     } 
     
      public static void menuPrincipal(){
@@ -108,7 +111,7 @@ public class Tema_5_Carlos_Ribera {
                 }
                 case "d":{
                     System.out.println("------ BUSCAR INCIDENCIA CREADA ------");
-                   
+                    IncidenciaController.listarIncidenciasCreadas();
                     break;
                 }
                 case "e":{
