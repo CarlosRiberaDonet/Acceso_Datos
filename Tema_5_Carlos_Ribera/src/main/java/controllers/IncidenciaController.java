@@ -17,9 +17,9 @@ import utils.Utils;
  */
 public class IncidenciaController {
     
-     private static GestorXML xml = new GestorXML();
+    private static GestorXML xml = new GestorXML();
      
-     public static int calcularIdIncidencia(List<Incidencia> incidenciasList){
+    /* public static int calcularIdIncidencia(List<Incidencia> incidenciasList){
         
         int id = 0;
         
@@ -29,7 +29,7 @@ public class IncidenciaController {
             }
         }
         return id;
-    }
+    } */
      
      public static void obtenerIncidencia(){
          
@@ -52,7 +52,7 @@ public class IncidenciaController {
          Empleado empleadoOrigen = new Empleado();
          Empleado empleadoDestino = new Empleado();
          String detalleIncidencia = null;
-         char tipoIncidencia = ' ';
+         String tipoIncidencia = null;
           
          // Recorro los nodos del elemento <incidencia>
          for(int i = 0; i < datosIncidencia.getLength(); i++){
@@ -83,7 +83,7 @@ public class IncidenciaController {
                          break;
                      }
                      case "tipo":{
-                         tipoIncidencia =  valorTexto.charAt(0); // Cojo el primer
+                         tipoIncidencia =  valorTexto;
                          break;
                      }
                      case "fechahora":{
@@ -107,9 +107,29 @@ public class IncidenciaController {
      }
      
      public static Incidencia crearIncidencia(){
+
+        // Primero obtengo el último número de id de <Incidencia>
+        int id = xml.getIdIncidencia();
          
-         // int id = calcularIdIncidencia();
-         
-         return null;
+        // Pido datos al USR
+        String nombreOrigen = Utils.solicitaString("Introduza el nombre del empleado de origen");    
+        String apellidosOrigen = Utils.solicitaString("Introduzca los apellidos del empleado de origen");
+        
+        // Intento obtener el objeto Empleado
+        if(xml.obtenerEmpleado(nombreOrigen, apellidosOrigen) != null){ // Si 
+            // Solicito los datos del empleado de destino
+            String nombreDestino = Utils.solicitaString("Introduza el nombre del empleado de destino");    
+            String apellidosDestino = Utils.solicitaString("Introduzca los apellidos del empleado de destino");
+            
+            // Intento obtener el objeto Empleado
+            if(xml.obtenerEmpleado(nombreDestino, apellidosDestino) != null){ // Si los 2 empleados introducidos existem
+                // Solicito el resto de datos
+                String tipoIncidencia = Utils.solicitaTipoIncidencia("Ingrese el tipo de incidencia: \n N: Normal \n U: Urgente");
+                
+            }
+        }
+        
+        
+        return null;
      }
 }

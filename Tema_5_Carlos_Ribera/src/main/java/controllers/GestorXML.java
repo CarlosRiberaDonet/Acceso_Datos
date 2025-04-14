@@ -16,6 +16,7 @@ import org.w3c.dom.NodeList;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
+import org.xmldb.api.base.Resource;
 import org.xmldb.api.base.ResourceIterator;
 import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
@@ -52,7 +53,7 @@ public class GestorXML {
             System.out.println("No ha sido posible establecer la conexion con la BD: " + URI);
         } catch(Exception e){
             System.out.println("Error inseperado al conectar la BD: " + e.getMessage());
-        }
+        } 
         // Devuelvo la colección
         return col;
     }   
@@ -93,13 +94,7 @@ public class GestorXML {
         } catch(Exception e){
             System.out.println("Error inesperado al intentar obtener la lista de empleados " + e.getMessage());
         } finally{
-            if(col != null){
-                try{
-                     col.close();
-                } catch(XMLDBException e){
-                    System.out.println("Error al cerrar la conexion: " + e.getMessage());
-                }
-            }
+           cerrarConexion(col);
         }
         return empleadosList; 
     }
@@ -136,13 +131,7 @@ public class GestorXML {
         } catch(Exception e){
             System.out.println("Error inesaperado al agregar el nuevo empleado: " + e.getMessage());
         } finally{
-            if(col != null){
-                try{
-                    col.close(); // Libero recursos
-                } catch(XMLDBException e){
-                    System.out.println("Error al cerrar la conexion con la BD " + e.getMessage());
-                }
-            }
+            cerrarConexion(col);
         }
     }
     
@@ -173,14 +162,7 @@ public class GestorXML {
             System.out.println("ERROR inesperado en el login: " + e.getMessage());
         }
         finally{
-            if(col != null){
-                try{
-                    col.close();
-                } catch(XMLDBException e){
-                     System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
-                }
-               
-            }
+            cerrarConexion(col);
         }
         
         return false;
@@ -222,13 +204,7 @@ public class GestorXML {
         } catch(XMLDBException e){
             System.out.println("Error al intentar obtener el empleado de la BD: " + e.getMessage());
         } finally{
-            if(col != null){
-                try{
-                    col.close();
-                }catch(XMLDBException e){
-                    System.out.println("Error al cerrar la BD: " + e.getMessage());
-                }
-            }
+            cerrarConexion(col);
         }
         
        return null; // Si no encuentra el empleado, devuelvo null
@@ -249,11 +225,7 @@ public class GestorXML {
         } catch(XMLDBException e){
             System.out.println("Error al actualizar los datos del empleado: " + e.getMessage());
         } finally{
-            try{
-                col.close();
-            }catch(XMLDBException e){
-                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
-            } 
+            cerrarConexion(col);
         }    
     }
     
@@ -288,12 +260,8 @@ public class GestorXML {
         } catch(XMLDBException e){
             System.out.println("Error al eliminar el empleado de la BD: " + e.getMessage());
         } finally{
-            try{
-                col.close();
-            }catch(XMLDBException e){
-                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
-            } 
-        }    
+            cerrarConexion(col);
+        }  
        
         return false;  
     }
@@ -331,11 +299,7 @@ public class GestorXML {
         }  catch(XMLDBException e){
             System.out.println("Error al obtener la incidencia de la BD: " + e.getMessage());
         } finally{
-            try{
-                col.close();
-            }catch(XMLDBException e){
-                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
-            } 
+            cerrarConexion(col);
         }    
          
         return incidencia;
@@ -377,11 +341,7 @@ public class GestorXML {
         } catch(XMLDBException e){
             System.out.println("Error al obtener la lista de incidencias: " + e.getMessage());
         } finally{
-            try{
-                col.close();
-            }catch(XMLDBException e){
-                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
-            } 
+            cerrarConexion(col);
         }   
  
         return incidenciasList;
@@ -396,16 +356,37 @@ public class GestorXML {
             col = conexionBD();
             XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
             
+            // Consulta para obtener el id máximo de las incidencias
             String obtenerId = "max(for $i in doc(\"incidencias.xml\")//incidencia return xs:int($i/id))";
             
+            ResourceSet resultado = servicio.query(obtenerId);
+            ResourceIterator iterator = resultado.getIterator();
             
-        } catch(XMLDBException e){
+            // Si hay resultados, lo obtengo
+            if(iterator.hasMoreResources()){
+                Resource rs = iterator.nextResource();
+                
+                // El contenido viene en formato String y lo convierto a int
+                String idString = (String) rs.getContent();
+                id = Integer.parseInt(idString);
+            }
             
+        } catch(XMLDBException e){          
         } finally{
-            if(col != null){
+            cerrarConexion(col);
+        }
+        
+        return id; // Devuelvo el valor del último id encontrado
+    }
+
+    public void cerrarConexion(Collection col){
+        
+        if(col != null){
+            try{
                 col.close();
+            }catch(XMLDBException e){
+                System.out.println("Error al cerrar la conexion con la BD: " + e.getMessage());
             }
         }
-        return -1;
-    }
+    }             
 }

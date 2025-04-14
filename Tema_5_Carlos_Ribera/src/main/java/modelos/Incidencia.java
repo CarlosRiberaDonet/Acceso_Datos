@@ -14,10 +14,10 @@ public class Incidencia {
     private Empleado empleadoOrigen;
     private Empleado empleadoDestino;
     private String detalleIncidencia;
-    private char tipoIncidencia;
+    private String tipoIncidencia;
     
     // CONSTRUCTOR
-    public Incidencia(int id, String fechaHora, Empleado empleadoOrigen, Empleado empleadoDestino, String detalleIncidencia, char tipoIncidencia) {
+    public Incidencia(int id, String fechaHora, Empleado empleadoOrigen, Empleado empleadoDestino, String detalleIncidencia, String tipoIncidencia) {
         this.id = id;
         this.fechaHora = fechaHora;
         this.empleadoOrigen = empleadoOrigen;
@@ -72,11 +72,11 @@ public class Incidencia {
         this.detalleIncidencia = detalleIncidencia;
     }
 
-    public char getTipoIncidencia() {
+    public String getTipoIncidencia() {
         return tipoIncidencia;
     }
 
-    public void setTipoIncidencia(char tipoIncidencia) {
+    public void setTipoIncidencia(String tipoIncidencia) {
         this.tipoIncidencia = tipoIncidencia;
     }
     

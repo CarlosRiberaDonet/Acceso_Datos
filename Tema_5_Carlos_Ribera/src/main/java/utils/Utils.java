@@ -98,4 +98,25 @@ public class Utils {
   
         return input;
     }
+    
+    public static String solicitaTipoIncidencia(String mensaje){
+        
+        Scanner sc = new Scanner (System.in);
+        String tipoIncidencia = null;
+        String input = null;
+        do{        
+            System.out.println(mensaje);
+            input = sc.nextLine().toLowerCase();
+            if(input.equals("n")){
+               tipoIncidencia = "normal";
+            } else if(input.equals("u")){
+               tipoIncidencia = "urgente";
+            } else {
+                System.out.println("Entrada no valida. Seleccione 'n' o 'u'.");
+            }
+
+        }while(!input.equals("n") && !input.equals("u"));
+        
+        return tipoIncidencia;
+    }
 }
