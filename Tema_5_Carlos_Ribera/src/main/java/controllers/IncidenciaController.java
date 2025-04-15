@@ -4,6 +4,7 @@
  */
 package controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import modelos.Empleado;
 import modelos.Incidencia;
@@ -151,12 +152,20 @@ public class IncidenciaController {
         }
      }
      
-     public static void listarIncidenciasCreadas(){
-         
+     // Si recibe true mostrará las incidencias creadas, si recibe false, las incidencias recibidas
+     public static void listarIncidenciasCreadas(boolean incidenciaCreada){
+        
+        List<Incidencia> incidenciasList = new ArrayList<>();
         String nombreUsuario = Utils.solicitaString("Introduzca el nombre de usuario");
         
-        List<Incidencia> incidenciasList = xml.getIncicidenciasOrigen(nombreUsuario);
-        
+        // Si incidencia creada = true
+        if(incidenciaCreada){
+            incidenciasList = xml.getIncicidenciasEmpleado(nombreUsuario, true);
+        } 
+        // Si incidencia creada = false
+        else if(!incidenciaCreada){
+            incidenciasList = xml.getIncicidenciasEmpleado(nombreUsuario, false);
+        }     
         if(incidenciasList != null && !incidenciasList.isEmpty()){
             for(Incidencia i : incidenciasList){
                 System.out.println(i);
@@ -165,9 +174,5 @@ public class IncidenciaController {
         else{
             System.out.println("No se han encontrado incidencias con el nombre de usuario introducido");
         }
-     }
-     
-     public static void listarIncidenciasDestinadas(){
-         
      }
 }

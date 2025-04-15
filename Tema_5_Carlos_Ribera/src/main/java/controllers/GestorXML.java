@@ -419,26 +419,46 @@ public class GestorXML {
         }
     }
 
-    public List<Incidencia> getIncicidenciasOrigen(String nombreUsuario){
+    // Si recibe true, obtendra las incidencias creadas, si recibe false, las destinadas
+    public List<Incidencia> getIncicidenciasEmpleado(String nombreUsuario, boolean incidenciaCreada){
         
         List<Incidencia> incidenciasList = new ArrayList<>();
+        String consulta = "";
         
         Collection col = null;
         
         try{
             col = conexionBD();
             XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
-            String consulta = "for $i in doc(\"incidencias.xml\")//incidencia " +
+            
+            // Construyo consulta para obtener las incidencias creadas por un usuario
+            if(incidenciaCreada){
+                consulta = "for $i in doc(\"incidencias.xml\")//incidencia " +
                                "where $i/origen = \"" + nombreUsuario + "\" " +
                                "return $i";
-            ResourceSet resultado = servicio.query(consulta);
-            ResourceIterator iterator = resultado.getIterator();
+            }
+            // Construyo consulta para obtener las incidencias destinadas a un usuario
+            else if(!incidenciaCreada){
+                consulta = "for $i in doc(\"incidencias.xml\")//incidencia " +
+                               "where $i/destino = \"" + nombreUsuario + "\" " +
+                               "return $i";
+            }
             
+            // Ejecuta la consulta XQuery previamente construida y guarda los resultados
+            ResourceSet resultado = servicio.query(consulta);
+            // Crea un iterador para recorrer todos los resultados obtenidos
+            ResourceIterator iterator = resultado.getIterator();
+            // Mientras haya más recursos (nodos <incidencia>) en el resultado...
             while(iterator.hasMoreResources() ){
+                // Obtiene el siguiente recurso XML que representa una incidencia
                 XMLResource rs = (XMLResource) iterator.nextResource();
+                 // Extrae el contenido del recurso como un nodo DOM
                 Node nodo = rs.getContentAsDOM();
+                // Obtiene todos los nodos hijos de la incidencia (id, origen, destino, etc.)
                 NodeList datosIncidencia = nodo.getChildNodes();
+                // Transforma los nodos XML en un objeto Java de tipo Incidencia
                 Incidencia incidencia = IncidenciaController.leerDomIncidencia(datosIncidencia);
+                // Añade el objeto Incidencia a la lista de incidencias
                 incidenciasList.add(incidencia);
             }
             
@@ -455,21 +475,43 @@ public class GestorXML {
     // pero la mejor opción creo que sería reutilizar el método getIncicidenciasOrigen añadiendo un parametro extra:
     //getIncicidenciasOrigen(String nombreUsuario,String tipoBusqueda) para diferenciar si la busqueda la hace contra un empleado origen o destino
     
-    public List<Incidencia> getIncidenciasDestino(String nombreUsuario){
-       
-        List<Incidencia> incidenciasList = new ArrayList<>();
-        
-        Collection col = null;
-        try{ 
-            col = conexionBD();
-            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
-            String consulta = "";
-            
-            
-        }catch(XMLDBException e){
-            System.out.println("Error al obtener la lista de incidencias" + e.getMessage());
-        }
-       
-        return incidenciasList;
-    }
+    
+//    public List<Incidencia> getIncidenciasDestino(String nombreUsuario, boolean incidenciaCreada){
+//       
+//        List<Incidencia> incidenciasList = new ArrayList<>();
+//        
+//        Collection col = null;
+//        try{ 
+//            col = conexionBD();
+//            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
+//            String consulta = "for $i in doc(\"incidencias.xml\")//incidencia " +
+//                              "where $i/destino = \"" + nombreUsuario + "\" " +
+//                              "return $i";
+//            
+//            // Ejecuta la consulta XQuery previamente construida y guarda los resultados
+//            ResourceSet resultado = servicio.query(consulta);
+//            // Crea un iterador para recorrer todos los resultados obtenidos
+//            ResourceIterator iterator = resultado.getIterator();
+//            // Mientras haya más recursos (nodos <incidencia>) en el resultado...
+//            while(iterator.hasMoreResources()){
+//                // Obtiene el siguiente recurso XML que representa una incidencia
+//                XMLResource rs = (XMLResource) iterator.nextResource();
+//                // Extrae el contenido del recurso como un nodo DOM
+//                Node nodo = rs.getContentAsDOM();
+//                // Obtiene todos los nodos hijos de la incidencia (id, origen, destino, etc.)
+//                NodeList hijos = nodo.getChildNodes();
+//                // Transforma los nodos XML en un objeto Java de tipo Incidencia
+//                Incidencia incidencia = IncidenciaController.leerDomIncidencia(hijos);
+//                // Añade el objeto Incidencia a la lista de incidencias
+//                incidenciasList.add(incidencia);
+//            }
+//            
+//        }catch(XMLDBException e){
+//            System.out.println("Error al obtener la lista de incidencias" + e.getMessage());
+//        } finally{
+//            cerrarConexion(col);
+//        }
+//       
+//        return incidenciasList;
+//    }
 }
