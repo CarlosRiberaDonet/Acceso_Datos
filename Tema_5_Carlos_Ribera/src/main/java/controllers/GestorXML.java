@@ -470,48 +470,4 @@ public class GestorXML {
         
         return incidenciasList;
     }
-    
-    // He decidido duplicar este método para practicar mas con las consultas y estructuras de XML
-    // pero la mejor opción creo que sería reutilizar el método getIncicidenciasOrigen añadiendo un parametro extra:
-    //getIncicidenciasOrigen(String nombreUsuario,String tipoBusqueda) para diferenciar si la busqueda la hace contra un empleado origen o destino
-    
-    
-//    public List<Incidencia> getIncidenciasDestino(String nombreUsuario, boolean incidenciaCreada){
-//       
-//        List<Incidencia> incidenciasList = new ArrayList<>();
-//        
-//        Collection col = null;
-//        try{ 
-//            col = conexionBD();
-//            XQueryService servicio = (XQueryService) col.getService("XQueryService", "1.0");
-//            String consulta = "for $i in doc(\"incidencias.xml\")//incidencia " +
-//                              "where $i/destino = \"" + nombreUsuario + "\" " +
-//                              "return $i";
-//            
-//            // Ejecuta la consulta XQuery previamente construida y guarda los resultados
-//            ResourceSet resultado = servicio.query(consulta);
-//            // Crea un iterador para recorrer todos los resultados obtenidos
-//            ResourceIterator iterator = resultado.getIterator();
-//            // Mientras haya más recursos (nodos <incidencia>) en el resultado...
-//            while(iterator.hasMoreResources()){
-//                // Obtiene el siguiente recurso XML que representa una incidencia
-//                XMLResource rs = (XMLResource) iterator.nextResource();
-//                // Extrae el contenido del recurso como un nodo DOM
-//                Node nodo = rs.getContentAsDOM();
-//                // Obtiene todos los nodos hijos de la incidencia (id, origen, destino, etc.)
-//                NodeList hijos = nodo.getChildNodes();
-//                // Transforma los nodos XML en un objeto Java de tipo Incidencia
-//                Incidencia incidencia = IncidenciaController.leerDomIncidencia(hijos);
-//                // Añade el objeto Incidencia a la lista de incidencias
-//                incidenciasList.add(incidencia);
-//            }
-//            
-//        }catch(XMLDBException e){
-//            System.out.println("Error al obtener la lista de incidencias" + e.getMessage());
-//        } finally{
-//            cerrarConexion(col);
-//        }
-//       
-//        return incidenciasList;
-//    }
 }

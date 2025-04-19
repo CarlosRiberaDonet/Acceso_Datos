@@ -20,18 +20,6 @@ public class IncidenciaController {
     
     private static GestorXML xml = new GestorXML();
      
-    /* public static int calcularIdIncidencia(List<Incidencia> incidenciasList){
-        
-        int id = 0;
-        
-        for(Incidencia e : incidenciasList){
-            if(e.getId() >= id){
-               id = e.getId() +1;
-            }
-        }
-        return id;
-    } */
-     
      public static void obtenerIncidencia(){
          
          int id = Utils.solicitaId("Introduzca el id de la incidencia que desea buscar");
