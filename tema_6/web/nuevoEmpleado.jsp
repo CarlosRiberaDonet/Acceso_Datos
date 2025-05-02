@@ -26,9 +26,8 @@
                 <label>Teléfono</label><br>
                 <input type="text" name="telefono"><br><br>
 
-                <input type="submit" value="Guardar">    
+                <input type="submit" value="Guardar"><br><br>
+                <button type="button" onclick="location.href='index.jsp'">Volver</button>
         </form>
-        
-        <button onclick="history.back()">Volver</button>
 </body>
 </html>

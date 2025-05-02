@@ -80,7 +80,7 @@ public class CambiarPasswordServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        String nombreUsuario = request.getParameter("nombreUsuario");
+        String nombreUsuario = request.getParameter("nombreUsuario").toLowerCase();
         String contrasena = request.getParameter("contrasena");
         
         // Compruebo si el nombre de usuario existe en la BD

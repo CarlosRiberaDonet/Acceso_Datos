@@ -19,6 +19,7 @@
             <li><a href="crearIncidencia.jsp">Crear Incidencia</a></li>
             <li><a href="incidenciasCreadas.jsp">Incidencias Creadas</a></li>
             <li><a href="incidenciasDestinadas.jsp">Incidencias Destinadas</a></li>
+            <li><a href="LogoutServlet">Cerrar sesión</a></li>
         </ul>
     </body>
 </html>

@@ -29,8 +29,8 @@
             <label>Nuevo teléfono:</label><br>
             <input type="text" name="nuevoTelefono"><br><br>
             
-            <input type="submit" value="Actualizar"> 
+            <input type="submit" value="Actualizar"><br><br>
+            <button type="button" onclick="location.href='index.jsp'">Volver</button>
         </form>
-        <button onclick="history.back()">Volver</button>
     </body>
 </html>

@@ -79,7 +79,7 @@ public class EliminarEmpleadoServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        String nombreUsuario = request.getParameter("nombreUsuario");
+        String nombreUsuario = request.getParameter("nombreUsuario").toLowerCase();
         
         
         

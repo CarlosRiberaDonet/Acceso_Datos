@@ -9,6 +9,8 @@ import controllers.EmpleadoEJB;
 import controllers.IncidenciaEJB;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -92,6 +94,7 @@ public class NuevaIncidenciaServlet extends HttpServlet {
 
         // Obtengo parámetros
         String fechaStr = request.getParameter("fecha");
+        Date fecha;
         String origenStr = request.getParameter("empleadoOrigen").toLowerCase();
         String destinoStr = request.getParameter("empleadoDestino").toLowerCase();
         String detalle = request.getParameter("detalle");
@@ -112,9 +115,9 @@ public class NuevaIncidenciaServlet extends HttpServlet {
         }
 
         // Valido fecha
-        Date fecha;
         try {
-            fecha = java.sql.Date.valueOf(fechaStr);
+            LocalDateTime fechaLocal = LocalDateTime.parse(fechaStr);
+            fecha = Date.from(fechaLocal.atZone(ZoneId.systemDefault()).toInstant());
         } catch (IllegalArgumentException e) {
             out.println("<html><body>");
             out.println("<h2>Formato de fecha no válido.</h2>");

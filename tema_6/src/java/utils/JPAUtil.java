@@ -23,4 +23,21 @@ public class JPAUtil {
     public static EntityManager getEntityManager(){
         return emf.createEntityManager();
     }*/
+    
+     public static boolean esIdValido(String idStr) {
+        try {
+            int id = Integer.parseInt(idStr);
+            return id > 0;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
+    public static boolean esTextoValido(String texto) {
+        return texto != null && !texto.trim().isEmpty();
+    }
+    
+      public static boolean esTelefonoValido(String telefono) {
+        return telefono != null && telefono.matches("\\d{9}");
+    }
 }

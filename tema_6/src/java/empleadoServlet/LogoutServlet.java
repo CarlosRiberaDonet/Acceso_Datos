@@ -5,26 +5,20 @@
  */
 package empleadoServlet;
 
-import controllers.EmpleadoEJB;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import modelos.Empleados;
 
 /**
  *
  * @author Carlos Ribera
  */
-@WebServlet(name = "ServletEJB", urlPatterns = {"/ServletEJB"})
-public class ServletEJB extends HttpServlet {
-    
-    @EJB
-    EmpleadoEJB ec;
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
+public class LogoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +37,10 @@ public class ServletEJB extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet InsertarEmpleadoServlet</title>");            
+            out.println("<title>Servlet LogoutServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet EmpleadoServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet LogoutServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,7 +58,8 @@ public class ServletEJB extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        request.getSession().invalidate();
+        response.sendRedirect("login.jsp");
     }
 
     /**
@@ -78,58 +73,8 @@ public class ServletEJB extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        
-        // Recoge los datos del formulario
-        String usuario = request.getParameter("usuario").toLowerCase();
-        String contrasena = request.getParameter("contrasena");
-        String nombre = request.getParameter("nombre").toLowerCase();
-        String telefono = request.getParameter("telefono");
-        
-        // Valido los campos 
-        if(usuario == null || usuario.isEmpty() ||
-                contrasena == null || contrasena.isEmpty() ||
-                nombre == null ||nombre.isEmpty() ||
-                telefono == null || telefono.isEmpty()){
-            
-            out.println("<html><body>");
-            out.println("<h2>Todos los campos son obligatorios.</h2>");
-            out.println("<a href='nuevoEmpleado.jsp'>Volver</a>");
-            out.println("</body></html>");
-            return;
-        }
-        
-        Empleados empleado = ec.checkNombreUsuario(usuario);
-        
-        // Si el empleado ya existe
-        if(empleado != null){
-            // Respuesta al cliente
-            out.println("<html><body>");
-            out.println("<h3>El nombre de usuario introducido ya existe, elija otro.</h3>");
-            out.println("<a href='index.jsp'>Volver al menú</a>");
-            out.println("</body></html>");
-        } else{
-            // Asigno al objeto Empleados los datos introducidos por el USR
-            empleado = new Empleados();
-            empleado.setNombreUsuario(usuario);
-            empleado.setContrasena(contrasena);
-            empleado.setNombreCompleto(nombre);
-            empleado.setTelefono(telefono);
-
-            // Paso el objeto Empleado al método que se engarga de insertarlo en la BD
-            ec.insertarEmpleado(empleado);
-
-            // Respuesta al cliente
-            out.println("<html><body>");
-            out.println("<h3>Empleado recibido correctamente.</h3>");
-            out.println("<a href='index.jsp'>Volver al menú</a>");
-            out.println("</body></html>");
-        }        
+        processRequest(request, response);
     }
-    
-    
 
     /**
      * Returns a short description of the servlet.

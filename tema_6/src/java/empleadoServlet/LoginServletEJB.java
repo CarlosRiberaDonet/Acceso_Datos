@@ -79,7 +79,7 @@ public class LoginServletEJB extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         
-        String nombreUsuario = request.getParameter("nombreUsuario");
+        String nombreUsuario = request.getParameter("nombreUsuario").toLowerCase();
         String contrasena = request.getParameter("contrasena");
         
         boolean esValido = ec.validarEmpleado(nombreUsuario, contrasena);

@@ -15,7 +15,7 @@
         <h2>Nueva Incidencia</h2>
         <form action="NuevaIncidenciaServlet" method="post">
                 <label>Fecha</label><br>
-                <input type="date" name="fecha"><br><br>
+                <input type="datetime-local" name="fecha"><br><br>
 
                 <label>Empleado Origen</label><br>
                 <input type="text" name="empleadoOrigen"><br><br>

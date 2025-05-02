@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelos.Empleados;
+import utils.JPAUtil;
 
 /**
  *
@@ -82,16 +83,33 @@ public class ActualizarEmpleadoServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         // Recojo los datos introducidos por el USR
-        int id = Integer.parseInt(request.getParameter("idUsuario"));        
-        String nuevoNombreUsuario = request.getParameter("nuevoNombreUsuario");
+        String idStr = request.getParameter("idUsuario");        
+        String nuevoNombreUsuario = request.getParameter("nuevoNombreUsuario").toLowerCase();
         String nuevaContrasena = request.getParameter("nuevaContrasena");
-        String nuevoNombreCompleto = request.getParameter("nuevoNombreCompleto");
+        String nuevoNombreCompleto = request.getParameter("nuevoNombreCompleto").toLowerCase();
         String nuevoTelefono = request.getParameter("nuevoTelefono");
         
-        // Obtengo el objeto de tipo Empleados a partir del nombre de usuario introducido por el USR
+        // Valido los campos
+        if (!JPAUtil.esIdValido(idStr) ||
+            !JPAUtil.esTextoValido(nuevoNombreUsuario) ||
+            !JPAUtil.esTextoValido(nuevaContrasena) ||
+            !JPAUtil.esTextoValido(nuevoNombreCompleto) ||
+            !JPAUtil.esTelefonoValido(nuevoTelefono)) {
+
+            out.println("<html><body>");
+            out.println("<h2>Hay campos inválidos o incompletos</h2>");
+            out.println("<a href='nuevoEmpleado.jsp'>Volver</a>");
+            out.println("</body></html>");
+            return;
+        }
+        
+        // Parseo el id
+        int id = Integer.parseInt(idStr);
+        
+        // Obtengo el objeto de tipo Empleados a partir su id
         Empleados empleadoOriginal = ec.getEmpleadoById(id);
         
-        // Si el objeto recibido no es null
+        // Si el empleado existe
         if(empleadoOriginal != null){
             
             // Modifico los datos del objeto original

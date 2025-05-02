@@ -20,10 +20,11 @@
             <label>Contraseña</label><br>
             <input type="password" name="contrasena"><br><br>
 
-            <input type="submit" value="Login">
+            <input type="submit" value="Login"><br><br>
+            <button type="button" onclick="location.href='index.jsp'">Volver</button>
             
         </form>
         
-        <br><button onclick="history.back()">Volver</button>
+        
     </body>
 </html>
