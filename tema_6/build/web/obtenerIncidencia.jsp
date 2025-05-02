@@ -12,7 +12,7 @@
         <title>Obtener Incidencia por ID</title>
     </head>
     <body>
-        <form action="obtenerIncidenciaServlet" method="post">
+        <form action="ObtenerIncidenciaServlet" method="post">
             
             <label>ID Incidencia</label><br>
             <input type="text" name="incidenciaId"><br><br>

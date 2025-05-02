@@ -17,10 +17,10 @@ public class JPAUtil {
     
     // Creouna una única instancia de EntityManagerFactory para toda la aplicación (ya que he leído en el temario que es lo correcto y,
     //también me he informado de que gasta muchos recursos.
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("tema6PU");
+    /*private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("tema6PU");
     
     // Método que devuelve un nuevo EntityManager
     public static EntityManager getEntityManager(){
         return emf.createEntityManager();
-    }
+    }*/
 }

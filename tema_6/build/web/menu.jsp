@@ -15,7 +15,7 @@
         <h1>Menú Incidencias</h1>
         <ul>
             <li><a href="obtenerIncidencia.jsp">Buscar Incidencia por ID</a></li> 
-            <li><a href="listarIncidencias.jsp">Listar Incidencias</a></li>
+            <li><a href="ListarIncidenciasServlet">Listar Incidencias</a></li>
             <li><a href="crearIncidencia.jsp">Crear Incidencia</a></li>
             <li><a href="incidenciasCreadas.jsp">Incidencias Creadas</a></li>
             <li><a href="incidenciasDestinadas.jsp">Incidencias Destinadas</a></li>

@@ -5,6 +5,8 @@
  */
 package controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,5 +32,20 @@ public class IncidenciaEJB {
             e.printStackTrace();
         }  
         return null;  
+    }
+    
+    public List<Incidencias> getIncidenciasList(){
+        
+        try{
+            return em.createNamedQuery("Incidencias.findAll", Incidencias.class)
+                    .getResultList();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+    
+    public void crearIncidencia(Incidencias i){
+        em.persist(i);
     }
 }

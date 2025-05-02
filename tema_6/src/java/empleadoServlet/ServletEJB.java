@@ -83,9 +83,9 @@ public class ServletEJB extends HttpServlet {
         PrintWriter out = response.getWriter();
         
         // Recoge los datos del formulario
-        String usuario = request.getParameter("usuario");
+        String usuario = request.getParameter("usuario").toLowerCase();
         String contrasena = request.getParameter("contrasena");
-        String nombre = request.getParameter("nombre");
+        String nombre = request.getParameter("nombre").toLowerCase();
         String telefono = request.getParameter("telefono");
         
         Empleados empleado = ec.checkNombreUsuario(usuario);

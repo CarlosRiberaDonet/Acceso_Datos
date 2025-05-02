@@ -66,6 +66,19 @@ public class EmpleadoEJB {
         }
     }
     
+    public Empleados checkNombreCompleto(String nombreCompleto){
+        
+        System.out.println("Buscando empleado: " + nombreCompleto);
+        try{
+            return em.createNamedQuery("Empleados.findByNombreCompleto", Empleados.class)
+                    .setParameter("nombreCompleto", nombreCompleto)
+                    .getSingleResult();
+        } catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     public boolean cambiarPassword(String nombreUsuario, String contrasena){
 
         try{

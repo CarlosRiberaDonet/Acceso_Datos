@@ -9,6 +9,7 @@ import controllers.IncidenciaEJB;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,8 +22,8 @@ import modelos.Incidencias;
  *
  * @author Carlos Ribera
  */
-@WebServlet(name = "ObtenerIncidenciaServlet", urlPatterns = {"/ObtenerIncidenciaServlet"})
-public class ObtenerIncidenciaServlet extends HttpServlet {
+@WebServlet(name = "ListarIncidenciasServlet", urlPatterns = {"/ListarIncidenciasServlet"})
+public class ListarIncidenciasServlet extends HttpServlet {
 
     @EJB
     IncidenciaEJB ic;
@@ -43,10 +44,10 @@ public class ObtenerIncidenciaServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ObtenerIncidenciaServlet</title>");            
+            out.println("<title>Servlet ListarIncidenciasServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ObtenerIncidenciaServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ListarIncidenciasServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,7 +65,28 @@ public class ObtenerIncidenciaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        List<Incidencias> incidenciasList = ic.getIncidenciasList();
+
+        out.println("<html><body>");
+        out.println("<h2>Lista de Incidencias</h2>");
+        if (incidenciasList != null && !incidenciasList.isEmpty()) {
+            for (Incidencias i : incidenciasList) {
+                out.println("<hr>");
+                out.println("<p>Id: " + i.getId() + "</p>");
+                out.println("<p>Fecha: " + i.getFecha() + "</p>");
+                out.println("<p>Empleado Origen: " + i.getIdEmpleadoOrigen().getNombreCompleto() + "</p>");
+                out.println("<p>Empleado Destino: " + i.getIdEmpleadoDestino().getNombreCompleto() + "</p>");
+                out.println("<p>Detalle: " + i.getDetalle() + "</p>");
+                out.println("<p>Tipo: " + i.getTipo() + "</p>");
+            }
+        } else {
+            out.println("<p>No se encontró ninguna incidencia.</p>");
+        }
+        out.println("<br><a href='menu.jsp'>Volver al menú</a>");
+        out.println("</body></html>");
     }
 
     /**
@@ -78,37 +100,6 @@ public class ObtenerIncidenciaServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        
-        int incidenciaId = Integer.parseInt(request.getParameter("incidenciaId"));
-        
-        Incidencias incidencia = ic.getIncidenciaById(incidenciaId);
-        
-        if(incidencia != null){
-            int id = incidencia.getId();
-            Date fecha = incidencia.getFecha();
-            String empleadoOrigen = incidencia.getIdEmpleadoOrigen().getNombreCompleto();
-            String empleadoDestino = incidencia.getIdEmpleadoDestino().getNombreCompleto();
-            String detalle = incidencia.getDetalle();
-            char tipo = incidencia.getTipo();
-            
-            out.println("<html><body>");
-            out.println("<h2>INCIDENCIA</h2>");
-            out.println("<label>Id: " + id + "</label><br>");
-            out.println("<label>Fecha: " + fecha + "</label><br>");
-            out.println("<label>Empleado Origen: " + empleadoOrigen + "</label><br>");
-            out.println("<label>Empleado Destino: " + empleadoDestino + "</label><br>");
-            out.println("<label>Detalle: " + detalle + "</label><br>");
-            out.println("<label>Tipo: " + tipo + "</label><br>");
-            out.println("<a href='menu.jsp'>Volver al menú</a>");
-            out.println("</body></html>");  
-        } else{
-            out.println("<html><body>");
-            out.println("<h2>Incindencia con el número de id: " + incidenciaId + " no encontrada </h2>");
-            out.println("<a href='menu.jsp'>Volver al menú</a>");
-            out.println("</body></html>");
-        }
     }
 
     /**
