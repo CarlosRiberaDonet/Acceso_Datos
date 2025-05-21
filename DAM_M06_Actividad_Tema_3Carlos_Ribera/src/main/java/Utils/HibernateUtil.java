@@ -34,33 +34,6 @@ public class HibernateUtil {
     }
 
     /**
-     * Configura y construye la SessionFactory de Hibernate.
-     */
-    
-//    private static SessionFactory ConstruirSession() {
-//        try {
-//            Configuration configuration = new Configuration();
-//            configuration.configure("hibernate.cfg.xml"); // Cargar la configuración
-//
-//            // Agregar las clases manualmente para evitar problemas con el mapeo
-//            configuration.addAnnotatedClass(Modelos.Empleados.class);
-//            configuration.addAnnotatedClass(Modelos.Incidencias.class);
-//
-//            // Construir el servicio de Hibernate
-//            StandardServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
-//                    .applySettings(configuration.getProperties())
-//                    .build();
-//
-//            // Construir la SessionFactory
-//            return configuration.buildSessionFactory(serviceRegistry);
-//        } catch (Exception ex) {
-//            System.err.println("Error al iniciar Hibernate:");
-//            ex.printStackTrace();
-//            throw new ExceptionInInitializerError(ex);
-//        }
-//    }
-
-    /**
      * Obtiene una nueva sesión de Hibernate.
      */
     public static Session AbrirSesion() {
